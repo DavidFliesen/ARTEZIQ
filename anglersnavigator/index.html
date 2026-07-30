@@ -1,34 +1,27 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Enter where and when you're fishing and receive weather, tides, matched lures, and clear directions for how to fish them. The app combines real-world observations, Open-Meteo weather, NOAA tides, AI, and machine-learned semantic matching to recommend Z-Man lures for the conditions you may face.">
-  <title>Angler’s Navigator | ARTEZIQ</title>
-  <link rel="stylesheet" href="../styles.css">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Angler’s Navigator | ARTEZIQ</title>
+<meta name="description" content="Enter where and when you’re fishing and get real-world weather, tides, likely species, matched Z-Man lures, and clear directions for how to fish them.">
+<link rel="stylesheet" href="../styles.css">
+<style>:root{--accent:#17bfd3;--wash:rgba(23,191,211,.15)}</style>
 </head>
 <body class="app-page">
-  <a class="cycle-arrow left" href="../hairapparent/" aria-label="Previous app"><span aria-hidden="true">‹</span><span class="arrow-label">Previous app</span></a>
-  <a class="cycle-arrow right" href="../handoverfoot/" aria-label="Next app"><span aria-hidden="true">›</span><span class="arrow-label">Next app</span></a>
-  <main class="app-main">
-    <section class="app-shell">
-      <div>
-        <a class="brand-link" href="../">ART<span class="e">E</span>ZIQ</a>
-        <p class="eyebrow">Fishing intelligence</p>
-        <h1 class="app-title">Angler’s Navigator</h1>
-        <p class="app-copy">Enter where and when you're fishing and receive weather, tides, matched lures, and clear directions for how to fish them. The app combines real-world observations, Open-Meteo weather, NOAA tides, AI, and machine-learned semantic matching to recommend Z-Man lures for the conditions you may face.</p>
-        <span class="status">Under Development</span>
-      </div>
-      <figure class="preview"><img src="assets/preview.jpg" alt="Angler’s Navigator app preview"></figure>
-    </section>
-  </main>
-  <footer class="app-footer">© <span id="year"></span> ARTEZIQ. All rights reserved.</footer>
-  <script>
-    document.getElementById('year').textContent=new Date().getFullYear();
-    document.addEventListener('keydown',function(event){
-      if(event.key==='ArrowLeft') location.href='../hairapparent/';
-      if(event.key==='ArrowRight') location.href='../handoverfoot/';
-    });
-  </script>
-</body>
-</html>
+<a class="home-chip" href="../">ARTEZIQ</a>
+<a class="nav-arrow left" href="../hairapparent/" aria-label="Previous app">‹</a>
+<a class="nav-arrow right" href="../handoverfoot/" aria-label="Next app">›</a>
+<main class="app-shell">
+  <section class="app-copy">
+    <div class="eyebrow">Tackle & Bait Edition</div>
+    <h1 class="app-title">Angler’s Navigator</h1>
+    <p class="app-deck">Enter where and when you’re fishing and get real-world weather, tides, likely species, matched Z-Man lures, and clear directions for how to fish them.</p>
+    <ul class="feature-list"><li>Open-Meteo weather data</li><li>NOAA tide information</li><li>iNaturalist observations</li><li>AI semantic lure matching</li><li>Location-aware recommendations</li><li>Fishing technique guidance</li></ul>
+  </section>
+  <section class="app-visual" aria-label="Angler’s Navigator app artwork">
+    <div class="visual-card"><img src="../assets/anglersnavigator-icon.png" alt="Angler’s Navigator app icon artwork"></div>
+  </section>
+</main>
+<footer class="app-footer">© 2026 ARTEZIQ. All rights reserved.</footer>
+<script src="../app-template.js"></script>
+</body></html>

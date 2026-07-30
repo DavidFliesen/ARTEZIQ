@@ -1,33 +1,24 @@
-# ARTEZIQ Public Website
+# ARTEZIQ Website
 
-This repository contains the public ARTEZIQ website and five informational app pages.
-
-## Structure
-
-- `/index.html` — main ARTEZIQ landing page
-- `/anglersnavigator/`
-- `/handoverfoot/`
-- `/stillwater/`
-- `/mintvision/`
-- `/hairapparent/`
-
-The app development code should remain in separate repositories.
+Upload all files and folders in this package to the root of the `ARTEZIQ` GitHub repository.
 
 ## GitHub Pages
 
-1. Upload these files to the root of the ARTEZIQ repository.
-2. Open **Settings → Pages**.
-3. Under **Build and deployment**, select **Deploy from a branch**.
-4. Select the `main` branch and `/ (root)`.
-5. Enter `arteziq.com` as the custom domain.
-6. Enable **Enforce HTTPS** after GitHub verifies the domain.
+1. Open the repository on GitHub.
+2. Go to **Settings → Pages**.
+3. Choose **Deploy from a branch**.
+4. Select `main` and `/(root)`.
+5. Set the custom domain to `arteziq.com`.
+6. After the certificate is issued, enable **Enforce HTTPS**.
 
-## Porkbun forwarding destinations
+The `CNAME` file must remain in the repository root.
+
+## Porkbun URL forwarding
+
+Create permanent 301 forwards:
 
 - `anglersnavigator.arteziq.com` → `https://arteziq.com/anglersnavigator/`
 - `handoverfoot.arteziq.com` → `https://arteziq.com/handoverfoot/`
 - `stillwater.arteziq.com` → `https://arteziq.com/stillwater/`
 - `mintvision.arteziq.com` → `https://arteziq.com/mintvision/`
 - `hairapparent.arteziq.com` → `https://arteziq.com/hairapparent/`
-
-Use permanent 301 forwarding. The browser address will change to the corresponding folder URL after the redirect.

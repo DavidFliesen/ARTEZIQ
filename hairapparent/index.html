@@ -1,34 +1,27 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="A browser-based AI hairstyle makeover app for previewing haircut ideas on your own photo and generating a salon-ready stylist brief. Your photos remain on your device, and photorealistic generation uses your own OpenAI API key.">
-  <title>Hair Apparent | ARTEZIQ</title>
-  <link rel="stylesheet" href="../styles.css">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hair Apparent | ARTEZIQ</title>
+<meta name="description" content="Preview haircut ideas on your own photo and create a salon-ready stylist brief while keeping your original photos on your device.">
+<link rel="stylesheet" href="../styles.css">
+<style>:root{--accent:#ff6420;--wash:rgba(255,100,32,.15)}</style>
 </head>
 <body class="app-page">
-  <a class="cycle-arrow left" href="../mintvision/" aria-label="Previous app"><span aria-hidden="true">‹</span><span class="arrow-label">Previous app</span></a>
-  <a class="cycle-arrow right" href="../anglersnavigator/" aria-label="Next app"><span aria-hidden="true">›</span><span class="arrow-label">Next app</span></a>
-  <main class="app-main">
-    <section class="app-shell">
-      <div>
-        <a class="brand-link" href="../">ART<span class="e">E</span>ZIQ</a>
-        <p class="eyebrow">Private hairstyle preview</p>
-        <h1 class="app-title">Hair Apparent</h1>
-        <p class="app-copy">A browser-based AI hairstyle makeover app for previewing haircut ideas on your own photo and generating a salon-ready stylist brief. Your photos remain on your device, and photorealistic generation uses your own OpenAI API key.</p>
-        <span class="status">Under Development</span>
-      </div>
-      <figure class="preview"><img src="assets/preview.jpg" alt="Hair Apparent app preview"></figure>
-    </section>
-  </main>
-  <footer class="app-footer">© <span id="year"></span> ARTEZIQ. All rights reserved.</footer>
-  <script>
-    document.getElementById('year').textContent=new Date().getFullYear();
-    document.addEventListener('keydown',function(event){
-      if(event.key==='ArrowLeft') location.href='../mintvision/';
-      if(event.key==='ArrowRight') location.href='../anglersnavigator/';
-    });
-  </script>
-</body>
-</html>
+<a class="home-chip" href="../">ARTEZIQ</a>
+<a class="nav-arrow left" href="../mintvision/" aria-label="Previous app">‹</a>
+<a class="nav-arrow right" href="../anglersnavigator/" aria-label="Next app">›</a>
+<main class="app-shell">
+  <section class="app-copy">
+    <div class="eyebrow">AI Hairstyle Preview</div>
+    <h1 class="app-title">Hair Apparent</h1>
+    <p class="app-deck">Preview haircut ideas on your own photo and create a salon-ready stylist brief while keeping your original photos on your device.</p>
+    <ul class="feature-list"><li>AI hairstyle previews</li><li>Use your own photograph</li><li>Salon-ready stylist brief</li><li>Photos stay on your device</li><li>Bring your own API key</li><li>Browser-based experience</li></ul>
+  </section>
+  <section class="app-visual" aria-label="Hair Apparent app artwork">
+    <div class="visual-card"><img src="../assets/hairapparent-icon.png" alt="Hair Apparent app icon artwork"></div>
+  </section>
+</main>
+<footer class="app-footer">© 2026 ARTEZIQ. All rights reserved.</footer>
+<script src="../app-template.js"></script>
+</body></html>

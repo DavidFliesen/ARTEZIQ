@@ -1,34 +1,27 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Mint Vision is an AI-powered app that uses computer vision for on-device coin identification and market valuation, helping users quickly understand what a coin may be and what it may be worth.">
-  <title>Mint Vision | ARTEZIQ</title>
-  <link rel="stylesheet" href="../styles.css">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mint Vision | ARTEZIQ</title>
+<meta name="description" content="An AI-powered coin companion that uses computer vision for on-device coin identification and practical market valuation.">
+<link rel="stylesheet" href="../styles.css">
+<style>:root{--accent:#e5ad2d;--wash:rgba(229,173,45,.16)}</style>
 </head>
 <body class="app-page">
-  <a class="cycle-arrow left" href="../stillwater/" aria-label="Previous app"><span aria-hidden="true">‹</span><span class="arrow-label">Previous app</span></a>
-  <a class="cycle-arrow right" href="../hairapparent/" aria-label="Next app"><span aria-hidden="true">›</span><span class="arrow-label">Next app</span></a>
-  <main class="app-main">
-    <section class="app-shell">
-      <div>
-        <a class="brand-link" href="../">ART<span class="e">E</span>ZIQ</a>
-        <p class="eyebrow">AI coin identification</p>
-        <h1 class="app-title">Mint Vision</h1>
-        <p class="app-copy">Mint Vision is an AI-powered app that uses computer vision for on-device coin identification and market valuation, helping users quickly understand what a coin may be and what it may be worth.</p>
-        <span class="status">Under Development</span>
-      </div>
-      <figure class="preview"><img src="assets/preview.jpg" alt="Mint Vision app preview"></figure>
-    </section>
-  </main>
-  <footer class="app-footer">© <span id="year"></span> ARTEZIQ. All rights reserved.</footer>
-  <script>
-    document.getElementById('year').textContent=new Date().getFullYear();
-    document.addEventListener('keydown',function(event){
-      if(event.key==='ArrowLeft') location.href='../stillwater/';
-      if(event.key==='ArrowRight') location.href='../hairapparent/';
-    });
-  </script>
-</body>
-</html>
+<a class="home-chip" href="../">ARTEZIQ</a>
+<a class="nav-arrow left" href="../stillwater/" aria-label="Previous app">‹</a>
+<a class="nav-arrow right" href="../hairapparent/" aria-label="Next app">›</a>
+<main class="app-shell">
+  <section class="app-copy">
+    <div class="eyebrow">AI Coin Identifier</div>
+    <h1 class="app-title">Mint Vision</h1>
+    <p class="app-deck">An AI-powered coin companion that uses computer vision for on-device coin identification and practical market valuation.</p>
+    <ul class="feature-list"><li>Computer vision identification</li><li>On-device image analysis</li><li>Coin detail recognition</li><li>Market value estimates</li><li>Private local processing</li><li>Collection-ready results</li></ul>
+  </section>
+  <section class="app-visual" aria-label="Mint Vision app artwork">
+    <div class="visual-card"><img src="../assets/mintvision-icon.png" alt="Mint Vision app icon artwork"></div>
+  </section>
+</main>
+<footer class="app-footer">© 2026 ARTEZIQ. All rights reserved.</footer>
+<script src="../app-template.js"></script>
+</body></html>

@@ -1,34 +1,27 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Stillwater provides a Panda Sensei-guided Chair Tai Chi and Qigong experience. Sage teaches breathing and gentle movement in a calm, focused setting, with optional computer vision features planned to recognize movement and offer gentle corrections.">
-  <title>Stillwater Chair Tai Chi | ARTEZIQ</title>
-  <link rel="stylesheet" href="../styles.css">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Stillwater Chair Tai Chi | ARTEZIQ</title>
+<meta name="description" content="Sage, your Panda Sensei, guides calm breathing, seated Tai Chi, and gentle Qigong movements in a focused, accessible experience.">
+<link rel="stylesheet" href="../styles.css">
+<style>:root{--accent:#18c2d5;--wash:rgba(24,194,213,.14)}</style>
 </head>
 <body class="app-page">
-  <a class="cycle-arrow left" href="../handoverfoot/" aria-label="Previous app"><span aria-hidden="true">‹</span><span class="arrow-label">Previous app</span></a>
-  <a class="cycle-arrow right" href="../mintvision/" aria-label="Next app"><span aria-hidden="true">›</span><span class="arrow-label">Next app</span></a>
-  <main class="app-main">
-    <section class="app-shell">
-      <div>
-        <a class="brand-link" href="../">ART<span class="e">E</span>ZIQ</a>
-        <p class="eyebrow">Gentle guided movement</p>
-        <h1 class="app-title">Stillwater Chair Tai Chi</h1>
-        <p class="app-copy">Stillwater provides a Panda Sensei-guided Chair Tai Chi and Qigong experience. Sage teaches breathing and gentle movement in a calm, focused setting, with optional computer vision features planned to recognize movement and offer gentle corrections.</p>
-        <span class="status">Under Development</span>
-      </div>
-      <figure class="preview"><img src="assets/preview.jpg" alt="Stillwater Chair Tai Chi app preview"></figure>
-    </section>
-  </main>
-  <footer class="app-footer">© <span id="year"></span> ARTEZIQ. All rights reserved.</footer>
-  <script>
-    document.getElementById('year').textContent=new Date().getFullYear();
-    document.addEventListener('keydown',function(event){
-      if(event.key==='ArrowLeft') location.href='../handoverfoot/';
-      if(event.key==='ArrowRight') location.href='../mintvision/';
-    });
-  </script>
-</body>
-</html>
+<a class="home-chip" href="../">ARTEZIQ</a>
+<a class="nav-arrow left" href="../handoverfoot/" aria-label="Previous app">‹</a>
+<a class="nav-arrow right" href="../mintvision/" aria-label="Next app">›</a>
+<main class="app-shell">
+  <section class="app-copy">
+    <div class="eyebrow">Tai Chi & Qigong</div>
+    <h1 class="app-title">Stillwater Chair Tai Chi</h1>
+    <p class="app-deck">Sage, your Panda Sensei, guides calm breathing, seated Tai Chi, and gentle Qigong movements in a focused, accessible experience.</p>
+    <ul class="feature-list"><li>Guided chair sessions</li><li>Calm breathing instruction</li><li>Gentle movement practice</li><li>Accessible seated design</li><li>Freemium lesson library</li><li>Optional camera-based feedback</li></ul>
+  </section>
+  <section class="app-visual" aria-label="Stillwater Chair Tai Chi app artwork">
+    <div class="visual-card"><img src="../assets/stillwater-icon.png" alt="Stillwater Chair Tai Chi app icon artwork"></div>
+  </section>
+</main>
+<footer class="app-footer">© 2026 ARTEZIQ. All rights reserved.</footer>
+<script src="../app-template.js"></script>
+</body></html>
