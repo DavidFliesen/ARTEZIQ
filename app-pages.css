@@ -1,0 +1,225 @@
+:root {
+  color-scheme: dark;
+  --page-bg: #111;
+  --text: #f5f5f5;
+  --muted: #bdbdbd;
+  --gold: #d4af37;
+  --panel: #1a1a1a;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--page-bg);
+}
+
+body {
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+}
+
+.page-shell {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-nav {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  grid-template-areas: "previous logo next";
+  align-items: center;
+  gap: 24px;
+  padding: 20px 40px 12px;
+}
+
+.app-nav a {
+  color: var(--gold);
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.previous-link {
+  grid-area: previous;
+  justify-self: start;
+}
+
+.logo-link {
+  grid-area: logo;
+  justify-self: center;
+  line-height: 0;
+}
+
+.logo-link img {
+  display: block;
+  width: auto;
+  height: 38px;
+}
+
+.next-link {
+  grid-area: next;
+  justify-self: end;
+}
+
+.app-main {
+  width: min(100%, 1240px);
+  margin: 18px auto 0;
+  padding: 0 32px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.app-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 52%) minmax(0, 48%);
+  gap: 36px;
+  align-items: center;
+}
+
+.hero {
+  min-width: 0;
+  height: min(56vh, 540px);
+  min-height: 420px;
+  padding: 14px;
+  background: var(--panel);
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.hero img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.app-copy {
+  min-width: 0;
+}
+
+.app-copy h1 {
+  margin: 0;
+  font-size: clamp(40px, 4vw, 52px);
+  line-height: 1.05;
+}
+
+.app-copy h2 {
+  margin: 8px 0 22px;
+  color: #fff;
+  font-size: clamp(22px, 2vw, 26px);
+  line-height: 1.15;
+}
+
+.app-copy p {
+  margin: 0 0 20px;
+  font-size: clamp(18px, 1.65vw, 22px);
+  line-height: 1.45;
+  white-space: pre-line;
+}
+
+.app-copy ul {
+  margin: 0;
+  padding-left: 1.35em;
+}
+
+.app-copy li {
+  margin: 4px 0;
+  font-size: clamp(17px, 1.5vw, 21px);
+  line-height: 1.35;
+}
+
+.app-footer {
+  text-align: center;
+  padding: 30px 20px 34px;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+/* Phones only: logo first, navigation second, image third, copy below. */
+@media (max-width: 700px) {
+  .app-nav {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "logo logo"
+      "previous next";
+    row-gap: 18px;
+    padding: 22px 24px 8px;
+  }
+
+  .logo-link img {
+    height: 32px;
+  }
+
+  .app-nav a {
+    font-size: 16px;
+  }
+
+  .app-main {
+    display: block;
+    margin-top: 16px;
+    padding: 0 22px;
+  }
+
+  .app-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+
+  .hero {
+    order: 1;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 4 / 5;
+    padding: 10px;
+    border-radius: 16px;
+  }
+
+  .app-copy {
+    order: 2;
+  }
+
+  .app-copy h1 {
+    font-size: 38px;
+    line-height: 1.06;
+  }
+
+  .app-copy h2 {
+    margin-top: 7px;
+    margin-bottom: 18px;
+    font-size: 23px;
+  }
+
+  .app-copy p {
+    font-size: 18px;
+    line-height: 1.48;
+  }
+
+  .app-copy li {
+    font-size: 17px;
+    line-height: 1.4;
+  }
+
+  .app-footer {
+    padding-top: 34px;
+    padding-bottom: 28px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 390px) {
+  .app-main { padding-inline: 18px; }
+  .app-copy h1 { font-size: 34px; }
+  .app-copy h2 { font-size: 21px; }
+}
