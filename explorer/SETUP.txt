@@ -1,0 +1,25 @@
+ARTEZIQ EXPLORER PROGRAM - EMAIL/PDF SUBMISSION SETUP
+
+The website itself is hosted on GitHub Pages, which cannot send email or run server-side code.
+The included explorer page already:
+- requires every contact/application field
+- requires NDA acceptance
+- requires a handwritten signature
+- generates the completed signed NDA as a PDF
+
+To make Submit automatically email that PDF to the applicant:
+
+1. Open https://script.google.com and create a new Apps Script project.
+2. Paste the contents of google-apps-script.gs into Code.gs.
+3. Change:
+      const ADMIN_EMAIL = "YOUR_EMAIL_HERE";
+   to the email address where ARTEZIQ should receive Explorer requests.
+4. Deploy -> New deployment -> Web app.
+5. Execute as: Me
+6. Who has access: Anyone
+7. Deploy and copy the Web App URL.
+8. Send that URL back to ChatGPT.
+   ChatGPT can then insert it into explorer/index.html for you so you do not have to edit code.
+
+Until that URL is inserted, the page will validate the form and generate/download the signed NDA PDF,
+but it will not transmit or email the application.
