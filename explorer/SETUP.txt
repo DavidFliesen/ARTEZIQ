@@ -1,29 +1,49 @@
-ARTEZIQ EXPLORER PROGRAM - EMAIL/PDF SUBMISSION SETUP
+ARTEZIQ EXPLORER PROGRAM - HARDENED EMAIL/PDF SUBMISSION SETUP
 
-The website itself is hosted on GitHub Pages, which cannot send email or run server-side code.
-The included explorer page already:
-- requires every contact/application field
-- requires NDA acceptance
-- requires a handwritten signature
-- generates the completed signed NDA as a PDF
+The Explorer form lives on GitHub Pages, so the public website itself cannot send email.
+The included Google Apps Script file provides the server-side endpoint that receives the completed form,
+emails the signed PDF back to the applicant, and emails you a copy.
 
-To make Submit automatically email that PDF to the applicant:
+FILES INCLUDED IN THIS UPDATE
+- explorer/index.html
+- explorer/google-apps-script.gs
+- explorer/SETUP.txt
 
+WHAT CHANGED IN THIS HARDENED VERSION
+- Server-side validation for every required field
+- App allow-list (currently only Angler's Navigator is accepted)
+- Email and phone validation
+- Name/email consistency checks between the contact block and NDA block
+- Payload size limits and PDF size limits
+- Hidden honeypot field to catch basic bots
+- Form timing check to reject near-instant spam submissions
+- Simple rate limiting based on email + app
+- Shared submission token check (basic abuse deterrent)
+- No submitted personal data is returned in the server response
+
+DEPLOYMENT STEPS
 1. Open https://script.google.com and create a new Apps Script project.
-2. Paste the contents of google-apps-script.gs into Code.gs.
-3. Change:
+2. Paste the contents of explorer/google-apps-script.gs into Code.gs.
+3. Change this line:
       const ADMIN_EMAIL = "YOUR_EMAIL_HERE";
-   to the email address where ARTEZIQ should receive Explorer requests.
-4. Deploy -> New deployment -> Web app.
-5. Execute as: Me
-6. Who has access: Anyone
-7. Deploy and copy the Web App URL.
-8. Send that URL back to ChatGPT.
-   ChatGPT can then insert it into explorer/index.html for you so you do not have to edit code.
+   to the email address where you want ARTEZIQ Explorer requests sent.
+4. Keep this token exactly the same in BOTH files:
+      const SHARED_SUBMISSION_TOKEN = "arteziq-explorer-v1";
+      const SUBMISSION_TOKEN = "arteziq-explorer-v1";
+5. Deploy -> New deployment -> Web app.
+6. Execute as: Me
+7. Who has access: Anyone
+8. Deploy and copy the Web App URL.
+9. Open explorer/index.html and set:
+      const SUBMIT_ENDPOINT = "YOUR_WEB_APP_URL_HERE";
+10. Publish the updated explorer folder to your GitHub Pages site.
 
-Until that URL is inserted, the page will validate the form and generate/download the signed NDA PDF,
-but it will not transmit or email the application.
+IMPORTANT SECURITY NOTE
+"Who has access: Anyone" allows your public website to POST to the endpoint.
+It does NOT make submitted NDA data public.
+However, because the endpoint is public, the validation and anti-spam controls in this hardened version are important.
 
-APP SELECTION
-The Explorer form now lists all five ARTEZIQ apps, but only Angler's Navigator is enabled for selection and submission.
-When another app opens for testing later, its disabled option can be enabled and its app page can link to /explorer/.
+OPTIONAL NEXT STEPS FOR EVEN STRONGER PROTECTION
+- Add Cloudflare Turnstile or Google reCAPTCHA on the Explorer page
+- Route submissions through a more advanced backend later if needed
+- Store submissions in a locked-down private mailbox or private database only
