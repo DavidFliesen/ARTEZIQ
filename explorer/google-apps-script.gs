@@ -29,7 +29,9 @@ function doPost(e) {
     const applicantSubject = "Your signed ARTEZIQ Explorer Program NDA";
     const applicantBody =
       "Thank you for requesting consideration for the ARTEZIQ Explorer Program for " + data.appBeingTested + ".\n\n" +
-      "Attached is a PDF copy of the NDA you completed and signed.\n\n" +
+      "Attached is a PDF copy of the NDA you completed and signed.\n" +
+      "Agreement ID: " + (data.agreementId || "Not provided") + "\n" +
+      "Signed: " + (data.signedAt || "Not provided") + "\n\n" +
       "Your request is being considered. If selected, ARTEZIQ will contact you using the information you provided.\n\n" +
       "ARTEZIQ";
 
@@ -47,7 +49,9 @@ function doPost(e) {
         "Phone: " + data.phone + "\n" +
         "City / State: " + data.cityState + "\n" +
         "Preferred Contact: " + data.contactMethod + "\n" +
-        "Primary Testing Device: " + data.device + "\n\n" +
+        "Primary Testing Device: " + data.device + "\n" +
+        "Agreement ID: " + (data.agreementId || "Not provided") + "\n" +
+        "Signed: " + (data.signedAt || "Not provided") + "\n\n" +
         "Fishing experience / intended use:\n" + data.experience;
       GmailApp.sendEmail(ADMIN_EMAIL, "New ARTEZIQ Explorer Request - " + data.appBeingTested + " - " + data.fullName, adminBody, {
         attachments: [pdfBlob],

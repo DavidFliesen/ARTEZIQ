@@ -276,49 +276,122 @@ footer{text-align:center;color:#89979c;padding:32px 20px 42px;font-size:14px}
     const margin = 54, pageW = 612, pageH = 792, usable = pageW - margin*2;
     let y = 58;
 
+    const agreementId = 'ARTEZIQ-EXP-' + Date.now().toString(36).toUpperCase();
+    const signedAt = new Date().toLocaleString();
+
+    function ensureSpace(height=20) {
+      if (y + height > pageH - 55) {
+        doc.addPage();
+        y = 58;
+      }
+    }
+
     function addText(text, size=10, bold=false, gap=4) {
       doc.setFont('helvetica', bold ? 'bold' : 'normal');
       doc.setFontSize(size);
       const lines = doc.splitTextToSize(text, usable);
       const lineH = size * 1.35;
       for (const line of lines) {
-        if (y + lineH > pageH - 55) { doc.addPage(); y = 58; }
+        ensureSpace(lineH);
         doc.text(line, margin, y);
         y += lineH;
       }
       y += gap;
     }
 
+    function addHeading(text) {
+      ensureSpace(26);
+      addText(text, 11.5, true, 5);
+    }
+
     addText('ARTEZIQ TESTER NON-DISCLOSURE AGREEMENT', 15, true, 10);
-    addText('App Being Tested: ' + data.appBeingTested, 10, true);
-    addText('Tester: ' + data.ndaName, 10, true);
+    addText('App Being Tested: ' + data.appBeingTested, 10.5, true);
+    addText('Tester: ' + data.ndaName, 10.5, true);
     addText('Email: ' + data.ndaEmail, 10, false);
-    addText('Date of acceptance: ' + data.ndaDate, 10, false, 10);
+    addText('Date of Acceptance: ' + data.ndaDate, 10, false);
+    addText('Agreement ID: ' + agreementId, 9, false);
+    addText('Electronic Signature Timestamp: ' + signedAt, 9, false, 12);
 
-    // Preserve the supplied agreement language in the generated PDF.
-    const clean = ndaText
-      .replace(/^#\s+/gm,'')
-      .replace(/^##\s+/gm,'')
-      .replace(/\*\*/g,'')
-      .replace(/^---$/gm,'')
-      .replace(/_(10,)/g, data.ndaName)
-      .replace(/\n- /g, '\n• ');
-    addText(clean, 9, false, 8);
+    addText(
+      'This Non-Disclosure Agreement ("Agreement") is entered into as of ' +
+      data.ndaDate + ', by and between ARTEZIQ ("Disclosing Party"), and ' +
+      data.ndaName + ' ("Tester" or "Receiving Party"), an individual participating in the pre-release testing of ARTEZIQ software.',
+      9.5, false, 10
+    );
 
-    if (y > pageH - 230) { doc.addPage(); y = 58; }
-    addText('Completed Online Acceptance', 12, true, 8);
+    addHeading('1. Purpose');
+    addText('ARTEZIQ wishes to share access to one or more pre-release software applications, including but not limited to progressive web apps and their mobile (iOS/Android) versions (collectively, the "Software"), so that the Tester may test the Software and provide feedback. This Agreement governs the Tester\'s access to and use of the Software and any related information.', 9);
+
+    addHeading('2. Definition of Confidential Information');
+    addText('"Confidential Information" means any non-public information disclosed by ARTEZIQ to the Tester, whether in written, oral, visual, electronic, or any other form, including but not limited to:', 9);
+    [
+      'The Software itself, its existence, features, functionality, user interface, and design;',
+      'Access URLs, credentials, invitation links, and any means of accessing the Software;',
+      'Screens, screenshots, recordings, source code, data structures, and documentation;',
+      'Product plans, roadmaps, unreleased features, and business information; and',
+      'Any feedback, bug reports, or communications exchanged during testing.'
+    ].forEach(item => addText('• ' + item, 9, false, 1));
+
+    addHeading('3. Exclusions');
+    addText('Confidential Information does not include information that: (a) is or becomes publicly available through no fault of the Tester; (b) was rightfully known to the Tester before disclosure; (c) is rightfully received from a third party without a duty of confidentiality; or (d) is required to be disclosed by law, provided the Tester gives ARTEZIQ prompt written notice where legally permitted.', 9);
+
+    addHeading("4. Tester's Obligations");
+    addText('The Tester agrees to:', 9);
+    [
+      'Keep all Confidential Information strictly confidential and not disclose it to any third party;',
+      'Not share, forward, or publish any access URL, link, or credential provided by ARTEZIQ;',
+      'Not capture, reproduce, screenshot, screen-record, or copy the Software or its content except as expressly requested by ARTEZIQ for testing purposes;',
+      'Not publicly discuss, review, post about, or reveal the existence of the Software on social media, forums, app stores, or elsewhere;',
+      'Use the Software solely for the purpose of testing and providing feedback to ARTEZIQ; and',
+      'Take reasonable care to protect Confidential Information from unauthorized access.'
+    ].forEach(item => addText('• ' + item, 9, false, 1));
+
+    addHeading('5. No License or Ownership');
+    addText('Nothing in this Agreement grants the Tester any right, title, license, or ownership interest in the Software or Confidential Information. All intellectual property remains the exclusive property of ARTEZIQ. Access is granted only for the limited testing purpose and may be revoked by ARTEZIQ at any time, for any reason, without notice.', 9);
+
+    addHeading('6. Feedback');
+    addText('Any feedback, suggestions, ideas, bug reports, or improvements the Tester provides regarding the Software ("Feedback") shall become the sole property of ARTEZIQ. ARTEZIQ may use Feedback for any purpose without restriction, compensation, or attribution to the Tester.', 9);
+
+    addHeading('7. Return or Destruction of Access');
+    addText('Upon the conclusion of testing, or upon ARTEZIQ\'s request, the Tester shall immediately cease all use of the Software, delete any copies of Confidential Information in their possession, and stop using any access URLs or credentials provided. ARTEZIQ may disable access at any time.', 9);
+
+    addHeading('8. No Warranty');
+    addText('The Software is provided "AS IS" and "AS AVAILABLE" for testing purposes only. ARTEZIQ makes no warranties of any kind, express or implied, including fitness for a particular purpose, and shall not be liable for any damages arising from the Tester\'s use of the Software.', 9);
+
+    addHeading('9. No Obligation');
+    addText('Nothing in this Agreement obligates ARTEZIQ to proceed with any product, disclose any particular information, or enter into any further relationship (employment, partnership, or otherwise) with the Tester. Participation as a Tester is voluntary and unpaid unless otherwise agreed in writing.', 9);
+
+    addHeading('10. Term');
+    addText('This Agreement takes effect on the date of acceptance and remains in effect during the testing period and for two (2) years thereafter, except that obligations regarding trade secrets continue for as long as the information remains a trade secret under applicable law.', 9);
+
+    addHeading('11. Remedies');
+    addText('The Tester acknowledges that any breach of this Agreement may cause ARTEZIQ irreparable harm for which monetary damages would be inadequate. ARTEZIQ is therefore entitled to seek injunctive relief in addition to any other remedies available at law or in equity.', 9);
+
+    addHeading('12. Governing Law');
+    addText('This Agreement shall be governed by and construed in accordance with the laws of the State of South Carolina, without regard to its conflict-of-law principles.', 9);
+
+    addHeading('13. Entire Agreement');
+    addText('This Agreement constitutes the entire understanding between the parties regarding its subject matter and supersedes all prior discussions. Any amendment must be in writing and agreed to by both parties.', 9);
+
+    addHeading('Acceptance');
+    addText('By signing below, the Tester acknowledges they have read, understood, and agree to be bound by this Agreement.', 9, false, 10);
+
+    ensureSpace(210);
+    addText('Tester Name: ' + data.ndaName, 10, true);
+    addText('Email: ' + data.ndaEmail, 10, false);
     addText('App Being Tested: ' + data.appBeingTested, 10, false);
-    addText('Tester Name: ' + data.ndaName, 10, false);
-    addText('Email: ' + data.ndaEmail, 10, false);
     addText('Date: ' + data.ndaDate, 10, false);
     addText('On behalf of ARTEZIQ: David Fliesen', 10, false, 8);
     addText('Tester Signature:', 10, true, 4);
+
     const sig = canvas.toDataURL('image/png');
     doc.addImage(sig, 'PNG', margin, y, 300, 78);
-    y += 92;
-    addText('The Tester acknowledged that they read, understood, and agreed to be bound by this Agreement.', 9, false);
+    y += 90;
 
-    return doc;
+    addText('Agreement ID: ' + agreementId, 8.5, false);
+    addText('Signed electronically: ' + signedAt, 8.5, false);
+
+    return { doc, agreementId, signedAt };
   }
 
   form.addEventListener('submit', async (e) => {
@@ -348,7 +421,10 @@ footer{text-align:center;color:#89979c;padding:32px 20px 42px;font-size:14px}
         throw new Error("Explorer applications are currently open only for Angler's Navigator.");
       }
 
-      const doc = await makePdf(data);
+      const pdfResult = await makePdf(data);
+      const doc = pdfResult.doc;
+      data.agreementId = pdfResult.agreementId;
+      data.signedAt = pdfResult.signedAt;
       const filename = 'ARTEZIQ-Explorer-NDA-' + data.ndaName.replace(/[^a-z0-9]+/gi,'-') + '.pdf';
       const pdfDataUri = doc.output('datauristring');
       const pdfBase64 = pdfDataUri.split(',')[1];
