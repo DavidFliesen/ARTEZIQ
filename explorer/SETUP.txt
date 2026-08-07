@@ -23,3 +23,7 @@ To make Submit automatically email that PDF to the applicant:
 
 Until that URL is inserted, the page will validate the form and generate/download the signed NDA PDF,
 but it will not transmit or email the application.
+
+APP SELECTION
+The Explorer form now lists all five ARTEZIQ apps, but only Angler's Navigator is enabled for selection and submission.
+When another app opens for testing later, its disabled option can be enabled and its app page can link to /explorer/.

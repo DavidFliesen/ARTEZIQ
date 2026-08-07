@@ -82,6 +82,18 @@ footer{text-align:center;color:#89979c;padding:32px 20px 42px;font-size:14px}
       <h2>Contact Information</h2>
       <p class="lead">Please provide complete contact information so ARTEZIQ can reach you if you are selected.</p>
       <div class="grid">
+
+      <div class="field full">
+        <label class="required" for="appBeingTested">App Being Tested</label>
+        <select id="appBeingTested" name="appBeingTested" required>
+          <option value="Angler's Navigator" selected>Angler's Navigator — Explorer testing currently open</option>
+          <option value="Hand Over Foot" disabled>Hand Over Foot — Not currently accepting Explorers</option>
+          <option value="Stillwater" disabled>Stillwater — Not currently accepting Explorers</option>
+          <option value="Mint Vision" disabled>Mint Vision — Not currently accepting Explorers</option>
+          <option value="Hair Apparent" disabled>Hair Apparent — Not currently accepting Explorers</option>
+        </select>
+        <div class="note">Explorer applications are currently open only for Angler's Navigator. The other ARTEZIQ apps are shown here for future Explorer opportunities.</div>
+      </div>
         <div class="field"><label class="required" for="fullName">Full Name</label><input id="fullName" name="fullName" required autocomplete="name"></div>
         <div class="field"><label class="required" for="email">Email</label><input id="email" name="email" type="email" required autocomplete="email"></div>
         <div class="field"><label class="required" for="phone">Phone</label><input id="phone" name="phone" type="tel" required autocomplete="tel"></div>
@@ -101,6 +113,7 @@ footer{text-align:center;color:#89979c;padding:32px 20px 42px;font-size:14px}
       <p class="lead">Review the entire agreement below. Every acceptance field and the signature must be completed before the request can be submitted.</p>
       <div class="nda-box">
 <h2>ARTEZIQ TESTER NON-DISCLOSURE AGREEMENT</h2>
+<p><strong>App Being Tested:</strong> <span id="ndaAppPreview">Angler&#39;s Navigator</span></p>
 <p><strong>This Non-Disclosure Agreement ("Agreement") is entered into as of the date of acceptance below, by and between:</strong></p>
 <p><strong>ARTEZIQ</strong> ("Disclosing Party"), and</p>
 <p><strong><span id="ndaTesterNamePreview">the applicant named below</span></strong> ("Tester" or "Receiving Party"), an individual participating in the pre-release testing of ARTEZIQ software.</p>
@@ -277,6 +290,7 @@ footer{text-align:center;color:#89979c;padding:32px 20px 42px;font-size:14px}
     }
 
     addText('ARTEZIQ TESTER NON-DISCLOSURE AGREEMENT', 15, true, 10);
+    addText('App Being Tested: ' + data.appBeingTested, 10, true);
     addText('Tester: ' + data.ndaName, 10, true);
     addText('Email: ' + data.ndaEmail, 10, false);
     addText('Date of acceptance: ' + data.ndaDate, 10, false, 10);
@@ -293,6 +307,7 @@ footer{text-align:center;color:#89979c;padding:32px 20px 42px;font-size:14px}
 
     if (y > pageH - 230) { doc.addPage(); y = 58; }
     addText('Completed Online Acceptance', 12, true, 8);
+    addText('App Being Tested: ' + data.appBeingTested, 10, false);
     addText('Tester Name: ' + data.ndaName, 10, false);
     addText('Email: ' + data.ndaEmail, 10, false);
     addText('Date: ' + data.ndaDate, 10, false);
@@ -328,6 +343,10 @@ footer{text-align:center;color:#89979c;padding:32px 20px 42px;font-size:14px}
       data.ndaEmail = ndaEmail.value;
       data.ndaDate = ndaDate.value;
       data.agreed = document.getElementById('agree').checked;
+
+      if (data.appBeingTested !== "Angler's Navigator") {
+        throw new Error("Explorer applications are currently open only for Angler's Navigator.");
+      }
 
       const doc = await makePdf(data);
       const filename = 'ARTEZIQ-Explorer-NDA-' + data.ndaName.replace(/[^a-z0-9]+/gi,'-') + '.pdf';

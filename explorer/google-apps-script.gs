@@ -14,7 +14,7 @@ const ADMIN_EMAIL = "YOUR_EMAIL_HERE";
 function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents || "{}");
-    const required = ["fullName","email","phone","cityState","contactMethod","device","experience","ndaName","ndaEmail","ndaDate","pdfBase64","filename"];
+    const required = ["appBeingTested","fullName","email","phone","cityState","contactMethod","device","experience","ndaName","ndaEmail","ndaDate","pdfBase64","filename"];
     for (const key of required) {
       if (!data[key]) throw new Error("Missing required field: " + key);
     }
@@ -28,7 +28,7 @@ function doPost(e) {
 
     const applicantSubject = "Your signed ARTEZIQ Explorer Program NDA";
     const applicantBody =
-      "Thank you for requesting consideration for the ARTEZIQ Explorer Program.\n\n" +
+      "Thank you for requesting consideration for the ARTEZIQ Explorer Program for " + data.appBeingTested + ".\n\n" +
       "Attached is a PDF copy of the NDA you completed and signed.\n\n" +
       "Your request is being considered. If selected, ARTEZIQ will contact you using the information you provided.\n\n" +
       "ARTEZIQ";
@@ -41,6 +41,7 @@ function doPost(e) {
     if (ADMIN_EMAIL && ADMIN_EMAIL !== "YOUR_EMAIL_HERE") {
       const adminBody =
         "New ARTEZIQ Explorer Program request\n\n" +
+        "App Being Tested: " + data.appBeingTested + "\n" +
         "Name: " + data.fullName + "\n" +
         "Email: " + data.email + "\n" +
         "Phone: " + data.phone + "\n" +
@@ -48,7 +49,7 @@ function doPost(e) {
         "Preferred Contact: " + data.contactMethod + "\n" +
         "Primary Testing Device: " + data.device + "\n\n" +
         "Fishing experience / intended use:\n" + data.experience;
-      GmailApp.sendEmail(ADMIN_EMAIL, "New ARTEZIQ Explorer Request - " + data.fullName, adminBody, {
+      GmailApp.sendEmail(ADMIN_EMAIL, "New ARTEZIQ Explorer Request - " + data.appBeingTested + " - " + data.fullName, adminBody, {
         attachments: [pdfBlob],
         name: "ARTEZIQ Explorer Program"
       });
