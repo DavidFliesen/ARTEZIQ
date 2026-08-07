@@ -5,6 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Angler's Navigator | ARTEZIQ</title>
   <link rel="stylesheet" href="../app-pages.css?v=1">
+
+  <style>
+    .explorer-cta {
+      margin-top: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 20px;
+      border: 1px solid #d4af37;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(39,197,243,.12), rgba(212,175,55,.12));
+      color: #f4d35e;
+      text-decoration: none;
+      font-weight: 800;
+      line-height: 1.25;
+      box-shadow: 0 0 0 1px rgba(255,255,255,.03) inset;
+      transition: transform .18s ease, background .18s ease;
+    }
+    .explorer-cta:hover, .explorer-cta:focus {
+      transform: translateY(-1px);
+      background: linear-gradient(135deg, rgba(39,197,243,.20), rgba(212,175,55,.20));
+    }
+    @media (max-width: 700px) {
+      .explorer-cta { width: 100%; text-align: center; }
+    }
+  </style>
+
 </head>
 <body>
   <div class="page-shell">
@@ -37,6 +65,10 @@ Using Open-Meteo weather forecasts, NOAA tide predictions, millions of iNaturali
           <li>Fishing techniques</li>
           <li>Being developed for iOS and Android</li>
           </ul>
+
+          <a class="explorer-cta" href="/explorer/">
+            Request to be an Explorer to help test the app under development
+          </a>
         </div>
       </section>
     </main>
