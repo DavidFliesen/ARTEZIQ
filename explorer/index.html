@@ -95,12 +95,12 @@ footer{text-align:center;color:#89979c;padding:32px 20px 42px;font-size:14px}
           <select id="appBeingTested" name="appBeingTested" required>
             <option value="Angler's Navigator" selected>Angler's Navigator — Explorer testing currently open</option>
             <option value="Sherpa Caddie">Sherpa Caddie — Explorer testing currently open</option>
-            <option value="Hand Over Foot" disabled>Hand Over Foot — Not currently accepting Explorers</option>
+            <option value="Hand Over Foot">Hand Over Foot — Explorer testing currently open</option>
             <option value="Stillwater" disabled>Stillwater — Not currently accepting Explorers</option>
             <option value="Mint Vision" disabled>Mint Vision — Not currently accepting Explorers</option>
             <option value="Hair Apparent" disabled>Hair Apparent — Not currently accepting Explorers</option>
           </select>
-          <div class="note">Explorer applications are currently open for Angler's Navigator and Sherpa Caddie. The other ARTEZIQ apps are shown here for future Explorer opportunities.</div>
+          <div class="note">Explorer applications are currently open for Angler's Navigator, Sherpa Caddie, and Hand Over Foot. The other ARTEZIQ apps are shown here for future Explorer opportunities.</div>
         </div>
         <div class="field"><label class="required" for="fullName">Full Name</label><input id="fullName" name="fullName" required autocomplete="name"></div>
         <div class="field"><label class="required" for="email">Email</label><input id="email" name="email" type="email" required autocomplete="email"></div>
@@ -227,7 +227,7 @@ footer{text-align:center;color:#89979c;padding:32px 20px 42px;font-size:14px}
   ndaDate.value = new Date().toISOString().slice(0,10);
 
   const requestedApp = new URLSearchParams(window.location.search).get('app');
-  const selectableApps = ["Angler's Navigator", "Sherpa Caddie"];
+  const selectableApps = ["Angler's Navigator", "Sherpa Caddie", "Hand Over Foot"];
   const appBeingTested = document.getElementById('appBeingTested');
   if (requestedApp && selectableApps.includes(requestedApp)) {
     appBeingTested.value = requestedApp;
@@ -402,8 +402,8 @@ footer{text-align:center;color:#89979c;padding:32px 20px 42px;font-size:14px}
       data.userAgent = navigator.userAgent || '';
       data.submissionToken = SUBMISSION_TOKEN;
 
-      if (!["Angler's Navigator", "Sherpa Caddie"].includes(data.appBeingTested)) {
-        throw new Error("Explorer applications are currently open only for Angler's Navigator and Sherpa Caddie.");
+      if (!["Angler's Navigator", "Sherpa Caddie", "Hand Over Foot"].includes(data.appBeingTested)) {
+        throw new Error("Explorer applications are currently open only for Angler's Navigator, Sherpa Caddie, and Hand Over Foot.");
       }
       if (data.company) {
         throw new Error('Submission could not be accepted.');

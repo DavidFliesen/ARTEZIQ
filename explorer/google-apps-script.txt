@@ -12,7 +12,7 @@ IMPORTANT:
 */
 const ADMIN_EMAIL = "arteziq.apps@gmail.com";
 const SHARED_SUBMISSION_TOKEN = "arteziq-explorer-v1";
-const ALLOWED_APPS = ["Angler's Navigator", "Sherpa Caddie"];
+const ALLOWED_APPS = ["Angler's Navigator", "Sherpa Caddie", "Hand Over Foot"];
 const MAX_POST_BYTES = 3500000;
 const MAX_PDF_BYTES = 2500000;
 const MIN_COMPLETION_MS = 5000;          // require at least 5 seconds on the form
