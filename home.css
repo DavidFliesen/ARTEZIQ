@@ -40,7 +40,7 @@ body {
 
 .apps {
   display: grid;
-  grid-template-columns: repeat(5, minmax(150px, 1fr));
+  grid-template-columns: repeat(6, minmax(125px, 1fr));
   align-items: start;
   gap: clamp(18px, 2.2vw, 38px);
   margin: clamp(34px, 5vh, 62px) auto clamp(34px, 4vh, 52px);
@@ -84,6 +84,7 @@ body {
   white-space: nowrap;
 }
 .app-anglers .app-title, .app-stillwater .app-title { color: #19c8d2; }
+.app-sherpa .app-title { color: #8fa54e; }
 .app-hand .app-title { color: #72bd20; }
 .app-mint .app-title { color: #f2b434; }
 .app-hair .app-title { color: #ff6727; }
@@ -112,7 +113,7 @@ footer {
 
 @media (max-width: 1050px) {
   .home-shell { justify-content: flex-start; }
-  .apps { grid-template-columns: repeat(5, minmax(120px, 1fr)); gap: 16px; }
+  .apps { grid-template-columns: repeat(6, minmax(100px, 1fr)); gap: 14px; }
   .app img { margin-bottom: 13px; }
   .trust-row { grid-template-columns: 110px minmax(350px, 560px) 150px; gap: 22px; }
 }
@@ -126,7 +127,6 @@ footer {
     gap: 30px 20px;
     max-width: 620px;
   }
-  .app:last-child { grid-column: 1 / -1; width: 50%; justify-self: center; }
   .app img { width: min(100%, 210px); }
   .app-title { font-size: 17px; }
   .app-subtitle { white-space: normal; font-size: 13px; }
@@ -171,7 +171,7 @@ footer {
   }
 
   .app img {
-    width: min(100%, 190px);
+    width: min(100%, 172px);
     margin-bottom: 12px;
   }
 
