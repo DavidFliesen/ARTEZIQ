@@ -1,290 +1,405 @@
-# Angler's Jigsaw v2.0.3
+# ARTEZIQ Website
 
-Angler's Jigsaw is a fishing-inspired jigsaw puzzle Progressive Web App designed first for GitHub Pages and modern browsers, with the longer-term goal of packaging it for iOS and Android.
+**ARTEZIQ — Where ART and IQ meet to make things EZ.**
 
-Version 2.0 introduced the gameplay redesign. Version 2.0.1 is the first interaction-stability and traditional-piece-shape test build. The central idea is that solving a jigsaw is not only about placing pieces into fixed slots. The fun comes from handling pieces, sorting them, making piles, testing relationships, building clusters, changing strategies, and gradually turning a table full of pieces into a completed picture.
+This repository contains the public ARTEZIQ website and the individual product pages for ARTEZIQ apps and creative technology projects.
 
-## v2.0 gameplay philosophy
+Public website:
 
-The game should support the player's process instead of forcing one correct way to solve a puzzle.
+https://arteziq.com
 
-Players can:
+ARTEZIQ is a Disabled Veteran Owned Small Business focused on AI-powered apps and creative technology that simplify everyday things.
 
-- drag a piece from the Tackle Tray and leave it anywhere on the tabletop;
-- make their own piles by edge, color, pattern, shape, or connector type;
-- scatter all edge pieces onto the table with one button;
-- scatter all remaining tray pieces onto the table;
-- connect correct neighboring pieces anywhere on the table;
-- move connected pieces together as a cluster;
-- snap-lock a single piece or connected cluster into its correct location in the puzzle frame;
-- recall only unconnected single pieces back to the tray while keeping connected clusters and locked pieces on the table;
-- filter the tray by edges, corners, and number/direction of outward tabs;
-- hide the tray to gain more playing room;
-- use full-screen mode for the largest practical play area;
-- toggle an optional preview of the finished image.
+---
 
-The game intentionally does **not** return a freely placed piece to the tray simply because it is not near its final location. The tabletop is the player's workspace.
+## Current ARTEZIQ Apps
 
-## Puzzle flow
+### Angler's Navigator
+**Tackle & Bait Edition**
 
-1. Open **Start Fishing**.
-2. Choose one of four difficulty levels.
-3. Choose the fish image you want to solve.
-4. Solve it using whatever strategy you prefer.
-5. Finish the puzzle to see the species information.
-6. The completed fish is recorded in the **Fish Cooler**.
+A fishing companion designed to help anglers make better decisions based on location, date, time, weather, tides, observations, likely species, lure selection, and practical fishing techniques.
 
-There is no water-selection or rapid-click fishing mini-game in v2.0.
+Page:
 
-## Difficulty levels
+`/anglersnavigator/`
 
-All puzzle sizes preserve the same 4:3 board proportion:
+Explorer Program:
 
-- **12 pieces** — 4 × 3
-- **48 pieces** — 8 × 6
-- **108 pieces** — 12 × 9
-- **192 pieces** — 16 × 12
+`/explorer/anglersnavigator/`
 
-This keeps one consistent board shape while increasing puzzle complexity.
+---
 
-## Tackle Tray and sorting
+### Sherpa Caddie
+**Your Guide. Your Game. Your Best Round.**
 
-The Tackle Tray is a horizontal scrolling strip at the bottom of the play screen. It can be collapsed to increase the available tabletop.
+A beginner-friendly golf companion that combines the practical help of a caddie with the guidance of a coach. Sherpa Caddie helps golfers choose clubs, read the course, select safer targets, check playing conditions, and stay mentally focused one shot at a time.
 
-The tray filter supports:
+Page:
 
-- All pieces
-- Edges
-- Corners
-- 0 outward tabs
-- 1 outward tab
-- 1 outward tab facing up
-- 1 outward tab facing right
-- 1 outward tab facing down
-- 1 outward tab facing left
-- 2 outward tabs
-- 3 outward tabs
-- 4 outward tabs
+`/sherpacaddie/`
 
-These filters are optional helpers. Players are still free to build their own piles anywhere on the table.
+Explorer Program:
 
-## Scatter and recall tools
+`/explorer/sherpacaddie/`
 
-### Edges to Table
+---
 
-Moves all loose edge pieces from the tray to the table and scatters them around the puzzle area. This supports players who like to sort corners and top/bottom/left/right edges before building the frame.
+### Hand Over Foot
+**Classic Card Game**
 
-### All to Table / Recall Singles
+A digital rummy-style card game inspired by Hand and Foot Canasta. The game is designed for solo play against an AI opponent with Easy, Club, and Shark difficulty levels.
 
-This is one two-state control.
+Page:
 
-**All to Table**
-- scatters every loose tray piece onto the tabletop.
+`/handoverfoot/`
 
-After use, the same control becomes **Recall Singles**.
+Explorer Program:
 
-**Recall Singles**
-- returns only completely unconnected, unlocked single pieces to the tray;
-- leaves connected groups on the table;
-- leaves pieces already locked to the puzzle frame untouched.
+`/explorer/handoverfoot/`
 
-This supports a more exploratory "pile and search" style of solving without destroying progress.
+---
 
-## Piece behavior
+### Stillwater
+**Chair Tai Chi**
 
-Each puzzle piece has one of these states:
+A gentle Chair Tai Chi and Qigong experience designed around guided movement and accessible wellness.
 
-1. **Tray** — waiting in the Tackle Tray.
-2. **Loose on Table** — freely positioned by the player.
-3. **Connected Cluster** — correctly connected to one or more neighboring pieces; the cluster moves together.
-4. **Locked to Puzzle** — the piece or cluster has reached the correct puzzle-frame position and is locked into place.
+Page:
 
-Correct neighboring pieces can connect anywhere on the tabletop. A connected cluster preserves the correct relative geometry between all of its pieces.
+`/stillwater/`
 
-## Puzzle-piece design
+---
 
-Version 2.0 uses a conventional ribbon-cut visual language:
+### Mint Vision
+**AI Coin Identifier**
 
-- flat outer borders;
-- centered rounded tabs (outward knobs);
-- centered rounded blanks (inward sockets);
-- mirrored neighboring edges so the connectors match exactly.
+An AI-assisted coin identification concept designed to help users recognize and learn more about coins.
 
-The piece engine uses SVG clipping so each piece contains the correct portion of the same full puzzle image.
+Page:
 
-## Play-area design
+`/mintvision/`
 
-The play screen is intentionally different from the earlier 50/50 board-and-tray layout.
+---
 
-Version 2.0 uses:
+### Hair Apparent
+**AI Hairstyle Preview**
 
-- a large free tabletop;
-- a centered 4:3 puzzle frame;
-- staging/sorting space around the frame;
-- a compact toolbar;
-- a collapsible bottom tray.
+A hairstyle visualization concept designed to let users explore different looks before making a change.
 
-The play screen uses `100svh` to reduce layout jumping on mobile Safari when browser controls appear or disappear. The puzzle geometry is recalculated deliberately when entering full screen, changing orientation, or changing the tray size rather than continuously rebuilding the board.
+Page:
 
-## Full-screen play
+`/hairapparent/`
 
-The **Full Screen** button uses the browser Fullscreen API when available.
+---
 
-On browsers or installation modes that do not expose the API, the rest of the game continues normally.
+## ARTEZIQ Explorer Program
 
-## Preview
+The **ARTEZIQ Explorer Program** allows selected users to help evaluate pre-release ARTEZIQ apps and provide practical, real-world feedback during development.
 
-The finished image is hidden by default inside the puzzle frame.
+Explorer applicants may be asked to:
 
-The **Preview** button shows a translucent version of the completed image as an optional guide. This can be turned off again at any time.
+- test pre-release software;
+- report bugs or confusing behavior;
+- identify usability problems;
+- provide feedback about features and workflow;
+- test the app on their own device;
+- help ARTEZIQ improve the product before release.
+
+Explorer participation is voluntary and unpaid.
+
+### Current Explorer Apps
+
+Explorer applications are currently available for:
+
+- Angler's Navigator
+- Sherpa Caddie
+- Hand Over Foot
+
+Each app has its own Explorer application page so the application and NDA are specific to the product being tested.
+
+### Explorer NDA
+
+Each Explorer page includes the complete ARTEZIQ Tester Non-Disclosure Agreement.
+
+The NDA:
+
+- identifies the specific app covered by the agreement;
+- displays the full agreement directly on the page;
+- collects the tester's name, email, and date;
+- requires acknowledgement of the agreement;
+- includes a handwritten signature pad;
+- identifies David Fliesen on behalf of ARTEZIQ;
+- generates a completed NDA PDF;
+- supports submission through the ARTEZIQ Google Apps Script web application.
+
+The Explorer form and NDA are intentionally kept app-specific. Do not combine the three Explorer pages into one generic form unless the application and NDA continue to clearly identify the exact app the tester is agreeing to evaluate and keep confidential.
+
+---
+
+## Website Structure
 
-## Fish Cooler
+The public site is a static GitHub Pages website.
+
+Typical repository structure:
+
+```text
+/
+├── index.html
+├── README.md
+├── CNAME
+├── home.css
+├── app-pages.css
+│
+├── assets/
+│   ├── arteziq-logo.png
+│   ├── anglers-navigator-hero.png
+│   ├── sherpa-caddie-logo.png
+│   ├── hand-over-foot-hero.png
+│   ├── stillwater-chair-tai-chi-hero.png
+│   ├── mint-vision-hero.png
+│   ├── hair-apparent-hero.png
+│   ├── arteziq-explorer-program.png
+│   └── home/
+│       └── app icons and homepage graphics
+│
+├── anglersnavigator/
+│   └── index.html
+│
+├── sherpacaddie/
+│   └── index.html
+│
+├── handoverfoot/
+│   └── index.html
+│
+├── stillwater/
+│   └── index.html
+│
+├── mintvision/
+│   └── index.html
+│
+├── hairapparent/
+│   └── index.html
+│
+└── explorer/
+    ├── index.html
+    ├── anglersnavigator/
+    │   └── index.html
+    ├── sherpacaddie/
+    │   └── index.html
+    └── handoverfoot/
+        └── index.html
+```
 
-The Fish Cooler is stored locally in the browser with `localStorage`.
+---
 
-For each completed species it records:
+## Homepage
 
-- number of completions;
-- largest piece count completed;
-- first completion date.
+The homepage presents the current ARTEZIQ app lineup.
 
-No account or server is required for this starter PWA.
+Current display order:
 
-## Current fish
+1. Angler's Navigator
+2. Sherpa Caddie
+3. Hand Over Foot
+4. Stillwater
+5. Mint Vision
+6. Hair Apparent
 
-- Largemouth Bass
-- Bluegill
-- Channel Catfish
-- Rainbow Trout
-- Brook Trout
-- Red Drum
+The homepage uses ARTEZIQ's black, white, and gold visual identity while allowing each app to retain its own accent color.
 
-## Artwork status
+The homepage also displays iOS and Android platform references and the Disabled Veteran Owned Small Business badge.
 
-The current SVG fish images are **prototype artwork**.
+---
 
-They are useful for testing puzzle mechanics but are not the intended final visual quality for the game.
+## App Page Navigation
 
-The planned art direction is:
+The individual app pages use a shared navigation pattern with:
 
-- biologically accurate by species;
-- attractive naturalist/game illustration style;
-- consistent across the entire fish library;
-- composed specifically for a 4:3 puzzle canvas;
-- no species-name text printed into the actual puzzle image;
-- no artificial filler bars;
-- enough visual detail and color variation to make the image enjoyable to solve.
+- **Previous** on the left;
+- the ARTEZIQ logo centered;
+- **Next** on the right.
 
-Species accuracy should be checked against reliable reference material before final game artwork is approved.
+Current navigation sequence:
 
-## Version number
+`Hair Apparent → Angler's Navigator → Sherpa Caddie → Hand Over Foot → Stillwater → Mint Vision → Hair Apparent`
 
-The active build number is shown in small text at the bottom of every screen:
+The centered ARTEZIQ logo links back to the main website.
 
-`Angler's Jigsaw • v2.0.3`
+---
 
-This is intentional. During game testing, screenshots and bug reports should always include the visible version number so errors can be matched to the correct build.
+## Shared App Page Design
 
-The version value is defined once in `js/app.js` as `APP_VERSION`.
+Desktop and tablet layout:
 
-## Current platform target
+- app artwork or hero image on the left;
+- app title, description, and features on the right.
 
-Version 2.0 is a browser/PWA build intended for:
+Phone layout:
 
-- iPadOS / iOS Safari
-- Android browsers
-- Windows
-- macOS
-- Linux
-- installable PWA use where supported
+1. ARTEZIQ logo
+2. Previous / Next navigation
+3. App hero image
+4. App title
+5. Subtitle
+6. Description
+7. Feature list
+8. Explorer button when applicable
+9. Copyright
 
-Pointer Events are used for mouse, touch, pen, and stylus input.
+Standard development status wording:
 
-## PWA / GitHub Pages
+**Being developed for iOS and Android**
 
-The project is designed to be hosted from a GitHub Pages repository or project folder.
+---
 
-The service worker uses:
+## Explorer Program Image
 
-- network-first loading for the HTML, CSS, and JavaScript app shell;
-- cached assets for offline-friendly behavior;
-- cache version `anglers-jigsaw-v2-0-3`.
+The Explorer pages use:
 
-This reduces the likelihood that an older JavaScript or CSS build remains stuck in the browser during testing.
+`/assets/arteziq-explorer-program.png`
 
-## Testing priorities for v2.0
+The current Explorer artwork is intended to communicate the community-testing concept through approachable activities associated with ARTEZIQ apps, including fishing, golf, and card play.
 
-Before adding more features, test these behaviors carefully on iPad, desktop, and phone:
+Explorer banner messaging:
 
-1. Drag individual pieces from the tray and leave them anywhere on the table.
-2. Move a loose table piece repeatedly without the board jumping.
-3. Connect two true neighboring pieces away from the puzzle frame.
-4. Drag a connected cluster and confirm it moves as one unit.
-5. Connect a cluster to another cluster.
-6. Move a piece or cluster near its correct frame position and confirm snap-lock.
-7. Use **Edges to Table** and sort pieces manually.
-8. Use **All to Table** and then **Recall Singles**.
-9. Confirm Recall Singles does not remove connected clusters.
-10. Confirm Recall Singles does not remove locked pieces.
-11. Test tray filters, including the outward-tab categories.
-12. Collapse and reopen the tray.
-13. Enter and exit full-screen mode.
-14. Rotate the device and confirm the tabletop remains usable.
-15. Complete a puzzle and confirm the Fish Cooler records it.
-16. Confirm the visible version number reads `v2.0.3`.
+**ARTEZIQ Explorer Program**
 
-## Recommended next development phases
+**Test • Discover • Shape what comes next**
 
-### 2.1 — interaction polish
-- optional snap sound;
-- subtle haptic feedback where supported;
-- cluster connection animation;
-- improved scatter spacing;
-- optional timer / relaxed mode;
-- save an unfinished puzzle locally.
+**Help evaluate pre-release ARTEZIQ apps and provide real-world feedback.**
 
-### 2.2 — artwork replacement
-- build the accurate 4:3 naturalist fish-art library;
-- replace prototype SVG fish images;
-- add image-quality review and species-accuracy checks.
+---
 
-### 2.3 — puzzle library
-- larger fish selection;
-- habitat collections;
-- favorites;
-- recently played puzzles;
-- completion badges and collection progress.
+## Google Apps Script Submission Service
 
-## Project goal
+The Explorer application pages are static HTML hosted on GitHub Pages. Form submission, PDF handling, and email delivery are handled separately through a deployed Google Apps Script Web App.
 
-Angler's Jigsaw should feel like a puzzle table for anglers, not a slot-placement exercise.
+The server-side script validates:
 
-The player should have enough freedom to develop a personal solving strategy, enough tactile feedback to enjoy manipulating pieces, and puzzle artwork good enough that completing the image feels worth the effort.
+- required fields;
+- supported Explorer apps;
+- applicant email;
+- phone information;
+- contact method;
+- NDA name and email consistency;
+- NDA date;
+- signature/PDF data;
+- anti-spam fields;
+- submission timing;
+- basic rate limiting.
 
+The currently approved Explorer app names must remain synchronized between the website forms and the Google Apps Script backend:
 
-## v2.0.1 bug-fix notes
+```text
+Angler's Navigator
+Sherpa Caddie
+Hand Over Foot
+```
 
-This test build addresses issues found during iPad testing:
+When adding another app to the Explorer Program, update both:
 
-- Replaced the earlier simplified connector profile with a more familiar traditional ribbon-cut jigsaw silhouette using narrow necks and fuller rounded knob/socket heads.
-- Starting a new puzzle now removes every old board piece and drag proxy before the new puzzle is constructed.
-- An unlocked single piece can be dragged from the tabletop back into the Tackle Tray.
-- Connected groups are protected from accidental destruction if they are dragged over the tray.
-- iPad/iPhone uses a stable app-level full-screen layout instead of native element fullscreen, because Safari can exit native fullscreen during touch-drag gestures.
-- Pinch and double-tap zoom gestures are suppressed while actively playing to reduce the chance of becoming stuck zoomed into the board.
-- The home/header logo is cropped more tightly so the surrounding black source-image canvas is no longer intended to show around the icon.
+1. the public Explorer application page; and
+2. the Google Apps Script server-side allow-list.
 
+After changing the Google Apps Script code, deploy a **new version of the existing Web App deployment** and verify that the `/exec` URL used by the Explorer pages is correct.
 
-## v2.0.2 puzzle-piece shape update
+The Google Apps Script source is operational backend code and should be managed in the Google Apps Script project rather than treated as a normal public website page.
 
-- Replaced the previous piece silhouette with a simpler classic jigsaw profile based directly on the user's reference examples.
-- Tabs and sockets are now centered circular forms with straighter ribbon-cut lines, matching the visual language players expect from a traditional jigsaw puzzle.
-- This build focuses specifically on the piece-shape correction request.
+---
 
+## Publishing with GitHub Pages
 
-## v2.0.3 transparent logo update
+The site is published from the ARTEZIQ GitHub repository using GitHub Pages.
 
-- Replaced `assets/images/logo.png` with the supplied transparent-background logo.
-- Removed the CSS background-image zoom/crop workaround previously used to hide black padding.
-- The header and opening-screen logo now render the PNG directly with `object-fit: contain`.
-- No artificial black box or CSS-created border should appear around the logo.
+Expected GitHub Pages configuration:
+
+- Branch: `main`
+- Folder: `/(root)`
+- Custom domain: `arteziq.com`
+
+The root `CNAME` file should contain:
+
+```text
+arteziq.com
+```
+
+Do not remove the `CNAME` file when replacing or uploading website files.
+
+---
+
+## Domain and Subdomains
+
+The ARTEZIQ domain is managed through Porkbun.
+
+The primary website is:
+
+https://arteziq.com
+
+App-specific subdomains can be configured in Porkbun as URL forwards to the corresponding folders on the main site.
+
+Examples:
+
+```text
+anglersnavigator.arteziq.com → https://arteziq.com/anglersnavigator/
+sherpacaddie.arteziq.com     → https://arteziq.com/sherpacaddie/
+handoverfoot.arteziq.com     → https://arteziq.com/handoverfoot/
+stillwater.arteziq.com       → https://arteziq.com/stillwater/
+mintvision.arteziq.com       → https://arteziq.com/mintvision/
+hairapparent.arteziq.com     → https://arteziq.com/hairapparent/
+```
+
+These are redirects/forwards to the GitHub Pages folders rather than separate hosted websites.
+
+---
+
+## Brand Guidelines
+
+Primary ARTEZIQ website styling:
+
+- black background;
+- white primary text;
+- gold accent elements;
+- clean modern typography;
+- ARTEZIQ logo with **EZ** highlighted in gold.
+
+The ARTEZIQ concept is:
+
+**ART + IQ = EZ**
+
+The site should communicate useful, approachable technology rather than a luxury-brand aesthetic.
+
+---
+
+## Updating the Website
+
+When making an update:
+
+1. Change only the files required for that update.
+2. Preserve existing working pages and assets unless they specifically need modification.
+3. Verify every image path and internal link before publishing.
+4. Verify Previous / Next navigation after adding or moving an app.
+5. Verify Explorer links independently for every participating app.
+6. Verify the app-specific NDA names the correct app.
+7. Verify the Google Apps Script endpoint before testing a live Explorer submission.
+8. Keep `CNAME` in the repository root.
+9. Test the published site on both desktop/tablet and phone layouts.
+
+For multi-file development updates, changed-file packages should contain only the files that actually changed rather than repackaging the entire website.
+
+---
+
+## Current Explorer Routes
+
+```text
+https://arteziq.com/explorer/anglersnavigator/
+https://arteziq.com/explorer/sherpacaddie/
+https://arteziq.com/explorer/handoverfoot/
+```
+
+Each route must load its own complete application and NDA page. An empty `index.html` in any Explorer folder will result in a blank white page on GitHub Pages.
+
+---
+
+## Copyright
+
+© 2026 ARTEZIQ. All rights reserved.

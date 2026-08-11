@@ -1,234 +1,66 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-  />
-  <meta name="theme-color" content="#08214a" />
-  <title>Angler's Jigsaw</title>
-  <link rel="manifest" href="manifest.json" />
-  <link rel="icon" href="assets/icons/icon-192.png" />
-  <link rel="stylesheet" href="css/styles.css?v=2.0.3" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="ARTEZIQ creates AI-powered apps and creative technology that simplify everyday things.">
+  <title>ARTEZIQ | Where ART and IQ meet to make things EZ</title>
+  <link rel="icon" href="assets/home/mintvision-icon.png">
+  <link rel="stylesheet" href="home.css?v=4">
 </head>
-
 <body>
-  <div class="water-bubbles" id="waterBubbles" aria-hidden="true"></div>
-  <div class="toast hidden" id="toast" role="status" aria-live="polite"></div>
+  <main class="home-shell">
+    <header class="brand-block" aria-label="ARTEZIQ">
+      <img class="wordmark" src="assets/home/arteziq-wordmark.png" alt="ARTEZIQ">
+      <img class="tagline-art" src="assets/home/tagline.png" alt="Where ART and IQ meet to make things EZ. AI-powered apps and creative technology that simplify everyday things.">
+    </header>
 
-  <header class="app-header" id="appHeader">
-    <button class="header-btn" id="homeBtn">Home</button>
+    <section class="apps" aria-label="ARTEZIQ apps under development">
+      <a class="app app-anglers" href="anglersnavigator/" aria-label="Learn more about Angler's Navigator">
+        <img src="assets/home/anglersnavigator-icon.png" alt="Angler's Navigator">
+        <span class="app-title">ANGLER’S<br>NAVIGATOR</span>
+        <span class="app-subtitle">Tackle &amp; Bait Edition</span>
+      </a>
 
-    <div class="header-brand">
-      <img src="assets/images/logo.png" alt="" class="header-logo" />
-      <div>
-        <h1>Angler's Jigsaw</h1>
-        <p>Piece together the catch.</p>
-      </div>
-    </div>
 
-    <button class="header-btn" id="coolerBtn">Fish Cooler</button>
-  </header>
+      <a class="app app-sherpa" href="sherpacaddie/" aria-label="Learn more about Sherpa Caddie">
+        <img src="/assets/home/sherpa-caddie-icon.png?v=2" alt="Sherpa Caddie">
+        <span class="app-title">SHERPA<br>CADDIE</span>
+        <span class="app-subtitle">Golf Guide &amp; Coach</span>
+      </a>
 
-  <main class="app-shell" id="appShell">
-    <!-- HOME -->
-    <section id="screen-home" class="screen active">
-      <div class="home-simple">
-        <h2 class="home-title">Angler's Jigsaw</h2>
+      <a class="app app-hand" href="handoverfoot/" aria-label="Learn more about Hand Over Foot">
+        <img src="assets/home/handoverfoot-icon.png" alt="Hand Over Foot">
+        <span class="app-title">HAND OVER<br>FOOT</span>
+        <span class="app-subtitle">Classic Card Game</span>
+      </a>
 
-        <div class="home-main">
-          <img
-            src="assets/images/logo.png"
-            alt="Angler's Jigsaw"
-            class="home-logo"
-          />
+      <a class="app app-stillwater" href="stillwater/" aria-label="Learn more about Stillwater Chair Tai Chi">
+        <img src="assets/home/stillwater-icon.png" alt="Stillwater Chair Tai Chi">
+        <span class="app-title">STILLWATER<br>CHAIR TAI CHI</span>
+        <span class="app-subtitle">Tai Chi &amp; Qigong</span>
+      </a>
 
-          <div class="home-actions">
-            <button class="home-action start" id="startFishingBtn">Start Fishing</button>
-            <button class="home-action help" id="howToPlayBtn">How to Play</button>
-            <button class="home-action cooler" id="homeCoolerBtn">Fish Cooler</button>
-          </div>
-        </div>
+      <a class="app app-mint" href="mintvision/" aria-label="Learn more about Mint Vision">
+        <img src="assets/home/mintvision-icon.png" alt="Mint Vision">
+        <span class="app-title">MINT<br>VISION</span>
+        <span class="app-subtitle">AI Coin Identifier</span>
+      </a>
 
-        <div class="arteziq-wordmark" aria-label="ARTEZIQ">
-          <span>A</span><span>R</span><span>T</span><span class="ez">E</span><span class="ez">Z</span><span>I</span><span>Q</span>
-        </div>
-      </div>
+      <a class="app app-hair" href="hairapparent/" aria-label="Learn more about Hair Apparent">
+        <img src="assets/home/hairapparent-icon.png" alt="Hair Apparent">
+        <span class="app-title">HAIR<br>APPARENT</span>
+        <span class="app-subtitle">AI Hairstyle Preview</span>
+      </a>
     </section>
 
-    <!-- CHOOSE PUZZLE -->
-    <section id="screen-select" class="screen">
-      <div class="panel select-panel">
-        <div class="screen-heading">
-          <div>
-            <h2>Choose Your Puzzle</h2>
-            <p>Pick a difficulty, then choose the fish you want to complete.</p>
-          </div>
-        </div>
-
-        <div class="difficulty-strip" id="difficultyStrip"></div>
-
-        <h3 class="section-label">Choose a Fish</h3>
-        <div class="fish-select-grid" id="fishSelectGrid"></div>
-
-        <div class="button-row">
-          <button class="secondary-btn" data-back-home="true">Back</button>
-        </div>
-      </div>
+    <section class="trust-row" aria-label="Platforms and veteran-owned business status">
+      <img class="platform ios" src="assets/home/ios.png" alt="iOS">
+      <img class="veteran" src="assets/home/veteran-badge.png" alt="Disabled Veteran Owned Small Business">
+      <img class="platform android" src="assets/home/android.png" alt="Android">
     </section>
 
-    <!-- HOW TO PLAY -->
-    <section id="screen-how" class="screen">
-      <div class="panel how-panel">
-        <h2>How to Play</h2>
-
-        <div class="how-grid">
-          <article>
-            <h3>Play Your Way</h3>
-            <p>Drag pieces from the Tackle Tray and leave them anywhere on the table. Make piles, sort by color or shape, or build small groups before moving them to the puzzle frame.</p>
-          </article>
-
-          <article>
-            <h3>Start With the Edges</h3>
-            <p><strong>Edges to Table</strong> scatters every loose edge piece onto the tabletop. Sort them into top, bottom, left, right, and corner groups if that is how you like to start.</p>
-          </article>
-
-          <article>
-            <h3>Connect Pieces Anywhere</h3>
-            <p>Correct neighboring pieces snap together even when they are away from the frame. Once connected, the group moves as one unit.</p>
-          </article>
-
-          <article>
-            <h3>Use the Whole Table</h3>
-            <p><strong>All to Table</strong> scatters every loose tray piece. The same button then becomes <strong>Recall Singles</strong>, which sends only unconnected single pieces back to the tray.</p>
-          </article>
-
-          <article>
-            <h3>Sort the Tray</h3>
-            <p>Use the tray filter to show edges, corners, or pieces with 0–4 outward tabs. One-tab pieces can also be filtered by direction.</p>
-          </article>
-
-          <article>
-            <h3>Snap to the Frame</h3>
-            <p>When a piece or connected group reaches its correct place in the puzzle frame, it snap-locks into position. Finish the puzzle to reveal the species information and add it to your Fish Cooler.</p>
-          </article>
-        </div>
-
-        <div class="button-row">
-          <button class="primary-btn" id="howStartBtn">Choose a Puzzle</button>
-          <button class="secondary-btn" data-back-home="true">Back</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- PUZZLE PLAY -->
-    <section id="screen-puzzle" class="screen puzzle-screen">
-      <div class="play-shell" id="playShell">
-        <div class="play-toolbar">
-          <div class="play-toolbar-left">
-            <button class="tool-btn" id="playHomeBtn">Home</button>
-            <div class="play-status">
-              <strong id="puzzleTitle">Angler's Jigsaw</strong>
-              <span id="puzzleInfo"></span>
-            </div>
-          </div>
-
-          <div class="play-toolbar-actions">
-            <button class="tool-btn edge-tool" id="edgesToTableBtn">Edges to Table</button>
-            <button class="tool-btn scatter-tool" id="allTableBtn">All to Table</button>
-            <button class="tool-btn" id="previewBtn">Preview</button>
-            <button class="tool-btn" id="fullscreenBtn">Full Screen</button>
-            <button class="tool-btn" id="newPuzzleBtn">New Puzzle</button>
-          </div>
-
-          <div class="piece-count" id="pieceCounterChip">0 / 0</div>
-        </div>
-
-        <div class="play-table" id="playTable" aria-label="Puzzle tabletop">
-          <div class="puzzle-frame" id="puzzleFrame" aria-label="Puzzle frame">
-            <div class="frame-preview" id="framePreview" aria-hidden="true"></div>
-          </div>
-        </div>
-
-        <div class="tray-bar" id="trayBar">
-          <div class="tray-header">
-            <div class="tray-title">
-              <strong>Tackle Tray</strong>
-              <span id="trayCount">0 pieces</span>
-            </div>
-
-            <div class="tray-options">
-              <label for="trayFilter">Show</label>
-              <select id="trayFilter">
-                <option value="all">All pieces</option>
-                <option value="edges">Edges only</option>
-                <option value="corners">Corners</option>
-                <option value="out-0">0 outward tabs</option>
-                <option value="out-1">1 outward tab</option>
-                <option value="out-up">1 tab — up</option>
-                <option value="out-right">1 tab — right</option>
-                <option value="out-down">1 tab — down</option>
-                <option value="out-left">1 tab — left</option>
-                <option value="out-2">2 outward tabs</option>
-                <option value="out-3">3 outward tabs</option>
-                <option value="out-4">4 outward tabs</option>
-              </select>
-
-              <button class="tray-toggle" id="collapseTrayBtn">Hide Tray</button>
-            </div>
-          </div>
-
-          <div class="tray-pieces" id="trayPieces"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- COMPLETE -->
-    <section id="screen-complete" class="screen">
-      <div class="panel">
-        <div class="complete-grid">
-          <div class="catch-art">
-            <img id="completeImage" src="" alt="Completed fish puzzle" />
-          </div>
-
-          <div>
-            <div class="complete-kicker">Puzzle Complete</div>
-            <h2 id="completeTitle"></h2>
-            <p class="scientific" id="completeScientific"></p>
-            <p id="completeDescription"></p>
-
-            <h3>Species History</h3>
-            <p id="completeHistory"></p>
-
-            <div class="button-row">
-              <button class="primary-btn" id="fishAgainBtn">Choose Another Puzzle</button>
-              <button class="secondary-btn" id="openCoolerBtn">Fish Cooler</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- COOLER -->
-    <section id="screen-cooler" class="screen">
-      <div class="panel">
-        <div class="screen-heading">
-          <div>
-            <h2>Fish Cooler</h2>
-            <p>Fish you have completed and collected.</p>
-          </div>
-          <div class="counter-chip" id="coolerCountChip">0 discovered</div>
-        </div>
-
-        <div id="coolerGrid" class="cooler-grid"></div>
-      </div>
-    </section>
+    <footer>© 2026 ARTEZIQ. All Rights Reserved.</footer>
   </main>
-
-  <div class="app-version" id="versionLabel">Angler's Jigsaw • v2.0.3</div>
-
-  <script src="js/data.js?v=2.0.3"></script>
-  <script src="js/app.js?v=2.0.3"></script>
 </body>
 </html>
