@@ -126,15 +126,15 @@ textarea:focus, input:focus{outline:none;border-color:var(--sonar)}
     <div class="card">
       <div class="seclab">Optional</div>
       <div class="sectitle" style="font-size:16px">Your name</div>
-      <input type="text" id="respName" maxlength="120" placeholder="So we know who to thank" autocomplete="name" />
+      <input type="text" id="respName" maxlength="120" placeholder="So we know who to thank" autocomplete="name" required />
     </div>
 
     <!-- Optional email -->
     <div class="card">
       <div class="seclab">Optional</div>
       <div class="sectitle" style="font-size:16px">Your email</div>
-      <input type="email" id="respEmail" maxlength="160" placeholder="you@example.com" autocomplete="email" />
-      <div class="fieldhint">We'll send a copy of your answers here. Leave it blank if you'd rather not. Your survey responses are used to help improve Angler's Navigator.</div>
+      <input type="email" id="respEmail" maxlength="160" placeholder="you@example.com" autocomplete="email" required />
+      <div class="fieldhint">We'll send a copy of your answers here. Your survey responses are used to help improve Angler's Navigator.</div>
     </div>
 
     <!-- LURES — brand-level -->
@@ -306,11 +306,7 @@ document.getElementById("surveyForm").addEventListener("submit", async (e)=>{
     const result=await resp.json();
     if(!result.ok) throw new Error(result.error||"Submission failed.");
     document.getElementById("surveyForm").style.display="none";
-    const gaveEmail = document.getElementById("respEmail").value.trim();
-    setStatus(gaveEmail
-      ? "✓ Thanks — your answers are in! A copy has been sent to your email."
-      : "✓ Thanks — your answers are in!",
-      "ok");
+    setStatus("✓ Thanks — your answers are in! A copy has been sent to your email.","ok");
   }catch(err){
     console.error(err);
     btn.disabled=false; btn.textContent="Submit Survey";
