@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+<meta name="theme-color" content="#04141a" />
+<title>Angler's Navigator — Tackle &amp; Bait Survey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --abyss:#04141a; --deep:#072730; --panel:#0b3540; --line:#16505e;
+  --sonar:#3ff0c4; --sonar-dim:#1d8a78; --amber:#ffc24b; --red:#ff3b3b;
+  --ink:#dcf3ee; --mute:#7fb0aa;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--abyss);color:var(--ink);font-family:'Archivo',sans-serif;
+  -webkit-font-smoothing:antialiased;padding-bottom:60px}
+.wrap{max-width:640px;margin:0 auto;padding:22px 18px 40px}
+
+/* header — same radar-sweep logo treatment as the app */
+header{padding:22px 0 8px;text-align:center;position:relative}
+.sweep{width:74px;height:74px;margin:0 auto 8px;border-radius:50%;position:relative;
+  background:radial-gradient(circle, rgba(63,240,196,.10) 0%, transparent 70%);
+  border:1px solid var(--line);overflow:hidden}
+.sweep::before{content:"";position:absolute;inset:0;border-radius:50%;
+  background:conic-gradient(from 0deg, rgba(63,240,196,.55), transparent 38%);
+  animation:spin 3.4s linear infinite}
+.sweep::after{content:"";position:absolute;inset:8px;border-radius:50%;border:1px solid rgba(63,240,196,.18)}
+.blip{position:absolute;width:6px;height:6px;border-radius:50%;background:var(--amber);
+  top:30%;left:62%;box-shadow:0 0 8px var(--amber);animation:blink 3.4s ease-in-out infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes blink{0%,40%{opacity:0}50%{opacity:1}100%{opacity:.2}}
+h1{font-family:'Anton',sans-serif;font-size:36px;letter-spacing:1px;line-height:1.15;
+  text-transform:uppercase;color:#fff;margin:0}
+.sub{font-size:15px;color:var(--sonar);font-weight:600;letter-spacing:.5px;margin-top:4px}
+.intro{font-size:13.5px;color:var(--mute);line-height:1.65;text-align:left;margin:16px 2px 0}
+
+/* section shell */
+.card{background:var(--deep);border:1px solid var(--line);border-radius:14px;padding:16px 16px 18px;margin-top:16px}
+.seclab{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2.5px;color:var(--amber);
+  text-transform:uppercase;margin-bottom:4px}
+.sectitle{font-family:'Anton',sans-serif;font-size:19px;letter-spacing:.5px;color:#fff;margin:0 0 4px}
+.secnote{font-size:12.5px;color:var(--mute);line-height:1.5;margin-bottom:12px}
+
+/* brand-level checkboxes for lures */
+.brandopt{display:flex;align-items:flex-start;gap:11px;padding:11px 4px;border-bottom:1px dashed rgba(22,80,94,.5)}
+.brandopt:last-child{border-bottom:none}
+.brandopt input[type=checkbox]{width:19px;height:19px;flex:0 0 19px;margin-top:1px;accent-color:var(--sonar);cursor:pointer}
+.brandopt label{font-size:13.5px;line-height:1.5;cursor:pointer}
+.brandopt label b{font-weight:800;color:#fff}
+.brandopt label .types{color:var(--mute)}
+
+/* bait checkboxes */
+.opt{display:flex;align-items:flex-start;gap:10px;padding:8px 4px;border-bottom:1px dashed rgba(22,80,94,.5)}
+.opt:last-child{border-bottom:none}
+.opt input[type=checkbox]{width:18px;height:18px;flex:0 0 18px;margin-top:1px;accent-color:var(--sonar);cursor:pointer}
+.opt label{font-size:13.5px;line-height:1.4;cursor:pointer}
+
+/* other write-in / text inputs */
+.other{margin-top:14px}
+.other label{display:block;font-size:12px;color:var(--amber);font-weight:600;margin-bottom:6px;letter-spacing:.3px}
+textarea, input[type=text], input[type=email]{
+  width:100%;background:#031b22;border:1px solid var(--line);color:var(--ink);
+  border-radius:9px;padding:10px 11px;font-size:13.5px;font-family:'Archivo',sans-serif;resize:vertical
+}
+textarea{min-height:64px;line-height:1.5}
+textarea:focus, input:focus{outline:none;border-color:var(--sonar)}
+.fieldhint{font-size:11.5px;color:var(--mute);margin-top:6px;line-height:1.5}
+
+.comments textarea{min-height:110px}
+
+/* honeypot — hidden from real users, left for bots to fill */
+.hp{position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden}
+
+/* submit */
+.submitwrap{margin-top:20px}
+.btn{width:100%;border:none;border-radius:13px;padding:16px;cursor:pointer;
+  font-family:'Anton',sans-serif;font-size:18px;letter-spacing:1.5px;text-transform:uppercase;
+  background:linear-gradient(180deg,#ff5252,var(--red));color:#fff;
+  box-shadow:0 12px 26px -10px rgba(255,59,59,.6)}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.55;cursor:default}
+.statusmsg{text-align:center;font-family:'Space Mono',monospace;font-size:12px;
+  letter-spacing:.5px;margin-top:12px;line-height:1.6;display:none}
+.statusmsg.show{display:block}
+.statusmsg.ok{color:var(--sonar)}
+.statusmsg.err{color:var(--red)}
+
+/* invite / NDA footer card */
+.invite{background:linear-gradient(180deg,#0b3540,#072730);border:1px solid var(--sonar-dim);
+  border-radius:14px;padding:20px 18px;margin-top:22px;text-align:center}
+.invite .h{font-family:'Anton',sans-serif;font-size:18px;color:#fff;letter-spacing:.5px;margin-bottom:8px}
+.invite p{font-size:13px;color:var(--ink);line-height:1.65;margin:0 0 14px}
+.invite .nda{font-size:11.5px;color:var(--mute);line-height:1.6;margin-bottom:16px}
+.invite .nda b{color:var(--amber)}
+.invite a.cta{display:inline-block;background:var(--sonar);color:var(--deep);text-decoration:none;
+  font-weight:800;font-size:14px;padding:13px 26px;border-radius:12px;letter-spacing:.3px}
+.invite a.cta:active{background:var(--sonar-dim)}
+
+/* ARTEZIQ footer, matches the app */
+.arteziq-foot{margin-top:26px;padding:18px 10px 8px;text-align:center;font-family:'Space Mono',monospace;
+  font-size:11px;letter-spacing:1.5px;color:var(--mute);border-top:1px solid var(--line)}
+.arteziq-foot .az-word{font-weight:800;color:#eaf6f3;letter-spacing:2px}
+.arteziq-foot .az-gold{color:var(--amber)}
+.arteziq-foot .az-dot{color:var(--sonar-dim);margin:0 6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div style="margin:2px 0 6px">
+    <a href="/" style="color:#ffc24b;text-decoration:none;font-weight:700;font-size:13px">← Back to ARTEZIQ</a>
+  </div>
+
+  <header>
+    <div class="sweep"><span class="blip"></span></div>
+    <h1>Angler's Navigator</h1>
+    <div class="sub">Tackle &amp; Bait Survey</div>
+    <p class="intro">Help us build a lure and bait list anglers actually trust. Check what you use, tell us what's missing, and share what you'd want in a fishing app. Takes about 2 minutes.</p>
+  </header>
+
+  <form id="surveyForm">
+
+    <!-- Optional name -->
+    <div class="card">
+      <div class="seclab">Optional</div>
+      <div class="sectitle" style="font-size:16px">Your name</div>
+      <input type="text" id="respName" maxlength="120" placeholder="So we know who to thank" autocomplete="name" />
+    </div>
+
+    <!-- Optional email -->
+    <div class="card">
+      <div class="seclab">Optional</div>
+      <div class="sectitle" style="font-size:16px">Your email</div>
+      <input type="email" id="respEmail" maxlength="160" placeholder="you@example.com" autocomplete="email" />
+      <div class="fieldhint">We'll send a copy of your answers here. Leave it blank if you'd rather not. Your survey responses are used to help improve Angler's Navigator.</div>
+    </div>
+
+    <!-- LURES — brand-level -->
+    <div class="card" id="luresCard">
+      <div class="seclab">Part 1</div>
+      <div class="sectitle">Which lure brands do you use?</div>
+      <div class="secnote">Check every brand you fish with — doesn't need to be limited to what's already in the app.</div>
+      <div id="brandGroups"></div>
+      <div class="other">
+        <label>Other lures you use that aren't listed above</label>
+        <textarea id="otherLures" maxlength="3000" placeholder="Brand, name, and what you use it for — one per line is great"></textarea>
+      </div>
+    </div>
+
+    <!-- BAIT -->
+    <div class="card" id="baitCard">
+      <div class="seclab">Part 2</div>
+      <div class="sectitle">Which live &amp; natural bait do you use?</div>
+      <div class="secnote">For the fish that just won't eat an artificial.</div>
+      <div id="baitGroup"></div>
+      <div class="other">
+        <label>Other bait you use that isn't listed above</label>
+        <textarea id="otherBait" maxlength="2000" placeholder="e.g. bloodworms, sand fleas, mullet…"></textarea>
+      </div>
+    </div>
+
+    <!-- COMMENTS -->
+    <div class="card comments">
+      <div class="seclab">Part 3</div>
+      <div class="sectitle">What would you like to see in a fishing app?</div>
+      <div class="secnote">Features, data, anything that's missing from the apps you've tried. No wrong answers.</div>
+      <textarea id="comments" maxlength="4000" placeholder="Type your thoughts here…"></textarea>
+    </div>
+
+    <!-- honeypot — real users never see this -->
+    <div class="hp" aria-hidden="true">
+      <label for="company">Company</label>
+      <input type="text" id="company" name="company" tabindex="-1" autocomplete="off" />
+    </div>
+
+    <div class="submitwrap">
+      <button type="submit" class="btn" id="submitBtn">Submit Survey</button>
+      <div class="statusmsg" id="statusMsg"></div>
+    </div>
+
+  </form>
+
+  <!-- INVITE / NDA -->
+  <div class="invite">
+    <div class="h">🎣 Want to help us test it?</div>
+    <p>We're looking for a small group of anglers to try Angler's Navigator before it's public and tell us what works, what doesn't, and what's missing.</p>
+    <div class="nda">Participation in the <b>ARTEZIQ Explorer</b> program requires signing an NDA — tap below for details and to apply.</div>
+    <a class="cta" href="https://arteziq.com/explorer/anglersnavigator/" target="_blank" rel="noopener">Join ARTEZIQ Explorer ↗</a>
+  </div>
+
+  <div class="arteziq-foot">
+    <span class="az-word">AR<span class="az-gold">EZ</span>IQ</span>
+    <span class="az-dot">•</span> Angler's Navigator Survey
+  </div>
+
+</div>
+
+<script>
+// ---- Paste your deployed Google Apps Script Web App URL here (ends in /exec) ----
+const SUBMIT_ENDPOINT = "PASTE_YOUR_APPS_SCRIPT_EXEC_URL_HERE";
+
+// Lure catalog, grouped by brand (mirrors the app's tackle.json)
+const BRANDS = {
+  zman:        {label:"Z-Man", lures:[
+    "ChatterBait JackHammer","ChatterBait EVO","ChatterBait MiniMax","Finesse TRD","TRD CrawZ",
+    "Finesse ShroomZ Jighead","DieZel MinnowZ","Slim SwimZ","Scented Jerk ShadZ","StreakZ 3.75",
+    "SWAG LT Swimbait","Gobius Swimbait","PrawnstarZ","Pop FrogZ","Graph ShadZ","Texas Eye Finesse Jighead"
+  ]},
+  rapala:      {label:"Rapala", lures:["X-Rap Jerkbait","Shad Rap","RipStop"]},
+  strikeking:  {label:"Strike King", lures:["Red Eye Shad","KVD Square Bill 1.5","Hack Attack Spinnerbait"]},
+  berkley:     {label:"Berkley", lures:["Gulp! Saltwater Swimming Mullet","PowerBait Power Worm","Gulp! Shrimp"]},
+  zoom:        {label:"Zoom", lures:["Trick Worm","Super Fluke"]},
+  megabass:    {label:"Megabass", lures:["Vision 110 Jerkbait"]},
+  mirrolure:   {label:"MirrOlure", lures:["MirrOdine Suspending Twitchbait","Top Dog Topwater"]},
+  yozuri:      {label:"Yo-Zuri", lures:["3D Inshore Twitchbait","Hydro Pencil Topwater"]},
+  savagegear:  {label:"Savage Gear", lures:["3D Mullet Swimbait","Pulse Tail RTF Bluegill"]}
+};
+
+const BAIT = [
+  "Nightcrawlers / Earthworms","Live Minnows / Shiners","Live / Fresh Shrimp",
+  "Cut Bait (Shad / Mullet / Herring)","Chicken Liver","Live Crawfish","Fiddler / Cut Blue Crab"
+];
+
+function joinList(arr){
+  if(arr.length===1) return arr[0];
+  if(arr.length===2) return arr[0]+" and "+arr[1];
+  return arr.slice(0,-1).join(", ")+", and "+arr[arr.length-1];
+}
+
+function buildLures(){
+  const host=document.getElementById("brandGroups");
+  Object.keys(BRANDS).forEach(key=>{
+    const b=BRANDS[key];
+    const n=b.lures.length;
+    const id=`brand_${key}`;
+    host.innerHTML+=`<div class="brandopt">
+      <input type="checkbox" id="${id}" data-brand="${b.label}">
+      <label for="${id}"><b>${b.label}</b> <span class="types">(${n} type${n>1?'s':''}: ${joinList(b.lures)})</span></label>
+    </div>`;
+  });
+}
+
+function buildBait(){
+  const host=document.getElementById("baitGroup");
+  BAIT.forEach((name,i)=>{
+    const id=`bait_${i}`;
+    host.innerHTML+=`<div class="opt">
+      <input type="checkbox" id="${id}" data-name="${name}">
+      <label for="${id}">${name}</label>
+    </div>`;
+  });
+}
+buildLures();
+buildBait();
+
+const SURVEY_ID = "anglers-navigator-survey-001";
+const FORM_VERSION = "2026-08-23-v1";
+const formLoadedAt = Date.now();
+
+function collectPayload(){
+  const brandChecks=[...document.querySelectorAll('#brandGroups input[type=checkbox]:checked')]
+    .map(el=>el.dataset.brand);
+  const baitChecks=[...document.querySelectorAll('#baitGroup input[type=checkbox]:checked')]
+    .map(el=>el.dataset.name);
+
+  return {
+    surveyId: SURVEY_ID,
+    formVersion: FORM_VERSION,
+    userAgent: navigator.userAgent || "",
+    name: document.getElementById("respName").value.trim(),
+    email: document.getElementById("respEmail").value.trim(),
+    lureBrands: brandChecks.join("; ") || "(none checked)",
+    otherLures: document.getElementById("otherLures").value.trim() || "(none)",
+    liveBait: baitChecks.join("; ") || "(none checked)",
+    otherBait: document.getElementById("otherBait").value.trim() || "(none)",
+    comments: document.getElementById("comments").value.trim() || "(none)",
+    company: document.getElementById("company").value, // honeypot
+    elapsedSeconds: Math.round((Date.now()-formLoadedAt)/1000)
+  };
+}
+
+function setStatus(msg, kind){
+  const el=document.getElementById("statusMsg");
+  el.textContent=msg;
+  el.className="statusmsg show "+(kind||"");
+}
+
+document.getElementById("surveyForm").addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  if(SUBMIT_ENDPOINT.indexOf("PASTE_YOUR")===0){
+    setStatus("Survey isn't wired up yet — missing the submission endpoint.","err");
+    return;
+  }
+  const btn=document.getElementById("submitBtn");
+  btn.disabled=true; btn.textContent="Submitting…";
+  setStatus("","");
+
+  try{
+    const resp=await fetch(SUBMIT_ENDPOINT, {
+      method:"POST",
+      headers:{"Content-Type":"text/plain;charset=utf-8"},
+      body: JSON.stringify(collectPayload())
+    });
+    const result=await resp.json();
+    if(!result.ok) throw new Error(result.error||"Submission failed.");
+    document.getElementById("surveyForm").style.display="none";
+    const gaveEmail = document.getElementById("respEmail").value.trim();
+    setStatus(gaveEmail
+      ? "✓ Thanks — your answers are in! A copy has been sent to your email."
+      : "✓ Thanks — your answers are in!",
+      "ok");
+  }catch(err){
+    console.error(err);
+    btn.disabled=false; btn.textContent="Submit Survey";
+    setStatus("⚠ Something went wrong sending your answers. Please try again in a moment.","err");
+  }
+});
+</script>
+</body>
+</html>
