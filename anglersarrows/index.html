@@ -3,54 +3,77 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="description" content="Angler's Arrows is a puzzle game that makes learning to recognize fish species fun.">
+  <meta name="description" content="Angler's Arrows is a fish identification puzzle game from ARTEZIQ.">
   <title>Angler's Arrows | ARTEZIQ</title>
-  <link rel="icon" href="/assets/home/anglersnavigator-icon.png">
-  <link rel="stylesheet" href="../new-pages.css?v=1">
+  <link rel="stylesheet" href="../app-pages.css?v=1">
+
+  <style>
+    .explorer-cta {
+      margin-top: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 20px;
+      border: 1px solid #d4af37;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(80,120,70,.18), rgba(212,175,55,.12));
+      color: #f4d35e;
+      text-decoration: none;
+      font-weight: 800;
+      line-height: 1.25;
+      box-shadow: 0 0 0 1px rgba(255,255,255,.03) inset;
+      transition: transform .18s ease, background .18s ease;
+    }
+    .explorer-cta:hover, .explorer-cta:focus {
+      transform: translateY(-1px);
+      background: linear-gradient(135deg, rgba(80,120,70,.28), rgba(212,175,55,.20));
+    }
+    @media (max-width: 700px) {
+      .explorer-cta { width: 100%; text-align: center; }
+    }
+  </style>
+
 </head>
 <body>
   <div class="page-shell">
-    <header class="site-header">
-      <a class="header-link" href="/anglersjigsaw/">&larr; Angler's Jigsaw</a>
-      <a class="brand" href="/" aria-label="Return to the ARTEZIQ home page">
+    <header class="app-nav">
+      <a class="previous-link" href="/anglersnavigator/">&larr; Previous</a>
+      <a class="logo-link" href="/" aria-label="Return to ARTEZIQ">
         <img src="/assets/arteziq-logo.png" alt="ARTEZIQ">
       </a>
-      <a class="header-link" href="/explorer/">Explorer &rarr;</a>
+      <a class="next-link" href="/anglersjigsaw/">Next &rarr;</a>
     </header>
 
-    <main class="feature-main">
-      <section class="feature-layout">
-        <div class="gallery" aria-label="Angler's Arrows screenshots">
-          <figure class="shot shot-primary">
-            <img src="assets/gameplay.webp" alt="Angler's Arrows puzzle revealing a fish silhouette" width="760" height="1014">
-          </figure>
-          <figure class="shot shot-secondary">
-            <img src="assets/species.webp" alt="Largemouth bass identification guide in Angler's Arrows" width="760" height="1014">
-          </figure>
+    <main class="app-main">
+      <section class="app-grid">
+        <div class="hero">
+          <img src="/anglersarrows/assets/gameplay.webp" alt="Angler's Arrows fish identification puzzle game">
         </div>
 
-        <div class="feature-copy">
-          <p class="eyebrow">Puzzle game &bull; Fish identification</p>
-          <h1>Angler's Arrows</h1>
-          <h2>Clear the arrows. Reveal the catch.</h2>
-          <p>Angler's Arrows turns fish identification into a satisfying puzzle. Clear every arrow to uncover a species, add it to your Fish Caught collection, and learn the visual clues that help you recognize it on the water.</p>
-          <ul class="feature-list">
+        <div class="app-copy">
+          <h1 style="color: #27c5f3">Angler's Arrows</h1>
+          <h2>Fish Identification Puzzle Game</h2>
+          <p>Angler's Arrows turns fish identification into a fast, visual puzzle. Clear the arrows to reveal the catch, build your Fish Caught collection, and learn the visual clues that help you recognize different species on the water.
+
+It is designed to make learning fish identification approachable and fun while giving anglers another way to sharpen their knowledge between trips.</p>
+          <ul>
             <li>Quick, approachable arrow puzzles</li>
             <li>Fish revealed as each level is solved</li>
             <li>Species identification tips</li>
-            <li>A growing Fish Caught collection</li>
+            <li>Growing Fish Caught collection</li>
             <li>Hints, undo, and reset controls</li>
-            <li>Designed for phones and tablets</li>
+            <li>Being developed for iOS and Android</li>
           </ul>
-          <div class="actions">
-            <a class="button" href="/explorer/">Become an ARTEZIQ Explorer</a>
-            <a class="button secondary" href="/anglersjigsaw/">See Angler's Jigsaw</a>
-          </div>
+
+          <a class="explorer-cta" href="/explorer/anglersarrows/">
+            Request to be an Explorer to help test the app under development
+          </a>
         </div>
       </section>
     </main>
 
-    <footer class="site-footer">&copy; 2026 ARTEZIQ. All rights reserved.</footer>
+    <footer class="app-footer">&copy; 2026 ARTEZIQ. All rights reserved.</footer>
   </div>
 </body>
 </html>
