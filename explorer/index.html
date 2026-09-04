@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="description" content="Join the ARTEZIQ Explorer Program and choose an app to help explore and shape.">
+  <meta name="description" content="Browse ARTEZIQ apps currently available for testing and request to become an Explorer.">
   <title>ARTEZIQ Explorer Program</title>
   <style>
     :root {
@@ -14,12 +14,11 @@
       --text: #f5f5f5;
       --muted: #c7cdd1;
       --gold: #dca52e;
-      --gold-soft: rgba(220,165,46,.18);
       --cyan: #19c8d2;
       --green: #8fa54e;
       --lime: #72bd20;
-      --mint: #f2b434;
-      --orange: #ff6727;
+      --sky: #38c7ff;
+      --aqua: #22c9d2;
     }
 
     * { box-sizing: border-box; }
@@ -36,17 +35,17 @@
       min-height: 100svh;
       width: min(100%, 1400px);
       margin: 0 auto;
-      padding: clamp(18px, 2.2vh, 24px) clamp(18px, 2.6vw, 32px) 18px;
+      padding: clamp(14px, 1.6vh, 20px) clamp(16px, 2.2vw, 28px) 14px;
       display: flex;
       flex-direction: column;
-      gap: clamp(14px, 1.8vh, 20px);
+      gap: clamp(10px, 1.4vh, 16px);
     }
 
     .topbar {
       display: grid;
       grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
     }
 
     .back-link {
@@ -65,12 +64,18 @@
 
     .brand img {
       display: block;
-      height: clamp(28px, 3.2vw, 40px);
+      height: clamp(26px, 2.7vw, 36px);
       width: auto;
     }
 
-    .hero {
+    .hero-wrap {
+      display: flex;
+      justify-content: center;
       width: 100%;
+    }
+
+    .hero {
+      width: min(100%, 720px);
       display: block;
       border-radius: 18px;
       border: 1px solid var(--panel-border);
@@ -81,11 +86,11 @@
       background: linear-gradient(180deg, rgba(17,20,23,.92), rgba(12,14,16,.95));
       border: 1px solid var(--panel-border);
       border-radius: 20px;
-      padding: clamp(16px, 2vw, 24px);
+      padding: clamp(14px, 1.6vw, 20px);
       box-shadow: 0 14px 36px rgba(0,0,0,.24);
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
       flex: 1 1 auto;
       min-height: 0;
     }
@@ -96,23 +101,23 @@
 
     .intro h1 {
       margin: 0 0 8px;
-      font-size: clamp(28px, 3vw, 42px);
+      font-size: clamp(24px, 2.5vw, 36px);
       line-height: 1.08;
     }
 
     .intro p {
       margin: 0 auto;
-      max-width: 900px;
+      max-width: 980px;
       color: var(--muted);
-      font-size: clamp(14px, 1.1vw, 18px);
-      line-height: 1.45;
+      font-size: clamp(13px, 1vw, 17px);
+      line-height: 1.42;
     }
 
     .apps {
       flex: 1 1 auto;
       display: grid;
       grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: clamp(12px, 1.15vw, 18px);
+      gap: clamp(10px, 1vw, 16px);
       align-items: stretch;
       min-height: 0;
     }
@@ -121,11 +126,10 @@
       background: radial-gradient(circle at 50% 0%, rgba(255,255,255,.04), rgba(255,255,255,.015) 48%, rgba(255,255,255,.02) 100%), #0a0d0f;
       border: 1px solid rgba(255,255,255,.09);
       border-radius: 22px;
-      padding: 14px 12px 16px;
+      padding: 12px 10px 14px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
       text-align: center;
       min-width: 0;
       outline-offset: 8px;
@@ -141,16 +145,17 @@
     }
 
     .app-card img {
-      width: min(100%, 146px);
+      width: min(100%, 132px);
       aspect-ratio: 1;
       object-fit: cover;
       border-radius: 22%;
       display: block;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
+      background: #0b0d0e;
     }
 
     .app-title {
-      font-size: clamp(16px, 1.25vw, 24px);
+      font-size: clamp(15px, 1.15vw, 22px);
       line-height: 1.04;
       font-weight: 700;
       letter-spacing: .015em;
@@ -158,33 +163,33 @@
     }
 
     .app-subtitle {
-      margin-top: 7px;
+      margin-top: 6px;
       color: var(--muted);
-      font-size: clamp(12px, .95vw, 16px);
-      line-height: 1.25;
+      font-size: clamp(11px, .88vw, 15px);
+      line-height: 1.24;
       min-height: 2.4em;
     }
 
     .app-cta {
       margin-top: auto;
-      padding-top: 12px;
+      padding-top: 10px;
       color: var(--gold);
       font-weight: 700;
-      font-size: clamp(12px, .95vw, 15px);
+      font-size: clamp(11px, .88vw, 14px);
     }
 
     .app-anglers .app-title { color: var(--cyan); }
     .app-sherpa .app-title { color: var(--green); }
     .app-hand .app-title { color: var(--lime); }
-    .app-stillwater .app-title { color: var(--cyan); }
-    .app-mint .app-title { color: var(--mint); }
+    .app-arrows .app-title { color: var(--sky); }
+    .app-jigsaw .app-title { color: var(--aqua); }
 
     .footer-note {
       text-align: center;
       color: rgba(220,165,46,.95);
       font-size: clamp(12px, .9vw, 15px);
       letter-spacing: .02em;
-      margin-top: 2px;
+      margin-top: 0;
     }
 
     @media (max-width: 1100px) {
@@ -193,7 +198,7 @@
     }
 
     @media (max-width: 760px) {
-      .page { padding: 16px 14px 18px; gap: 12px; }
+      .page { padding: 14px 12px 16px; gap: 10px; }
       .topbar {
         grid-template-columns: 1fr;
         justify-items: center;
@@ -201,14 +206,15 @@
       }
       .back-link { justify-self: start; width: 100%; }
       .brand { order: -1; }
-      .content { padding: 16px 14px 18px; }
+      .hero { width: min(100%, 560px); }
+      .content { padding: 14px 12px 16px; }
       .apps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .app-card img { width: min(100%, 132px); }
+      .app-card img { width: min(100%, 122px); }
     }
 
     @media (max-width: 430px) {
       .apps { grid-template-columns: 1fr; }
-      .intro h1 { font-size: 26px; }
+      .intro h1 { font-size: 24px; }
     }
   </style>
 </head>
@@ -222,15 +228,17 @@
       <span aria-hidden="true"></span>
     </header>
 
-    <img class="hero" src="/assets/arteziq-explorer-program.png" alt="ARTEZIQ Explorer Program">
+    <div class="hero-wrap">
+      <img class="hero" src="/assets/arteziq-explorer-program.png" alt="ARTEZIQ Explorer Program">
+    </div>
 
     <section class="content" aria-labelledby="explorer-heading">
       <div class="intro">
-        <h1 id="explorer-heading">Choose an app to explore</h1>
-        <p>Select an ARTEZIQ app below to learn more and, where available, request to become an Explorer who helps test and shape what comes next.</p>
+        <h1 id="explorer-heading">Apps currently available for testing</h1>
+        <p>Select an ARTEZIQ app below to learn more and to request to become an Explorer to help test and shape how the app is developed.</p>
       </div>
 
-      <section class="apps" aria-label="Apps available to explore">
+      <section class="apps" aria-label="Apps currently available for testing">
         <a class="app-card app-anglers" href="/anglersnavigator/" aria-label="Explore Angler's Navigator">
           <img src="/assets/home/anglersnavigator-icon.png" alt="Angler's Navigator">
           <div class="app-title">ANGLER’S<br>NAVIGATOR</div>
@@ -252,17 +260,17 @@
           <div class="app-cta">Explore this app &rarr;</div>
         </a>
 
-        <a class="app-card app-stillwater" href="/stillwater/" aria-label="Explore Stillwater Chair Tai Chi">
-          <img src="/assets/home/stillwater-icon.png" alt="Stillwater Chair Tai Chi">
-          <div class="app-title">STILLWATER<br>CHAIR TAI CHI</div>
-          <div class="app-subtitle">Tai Chi &amp; Qigong</div>
+        <a class="app-card app-arrows" href="/anglersarrows/" aria-label="Explore Angler's Arrows">
+          <img src="/assets/home/anglersarrows-icon.png" alt="Angler's Arrows">
+          <div class="app-title">ANGLER’S<br>ARROWS</div>
+          <div class="app-subtitle">Directional Fish Puzzle Game</div>
           <div class="app-cta">Explore this app &rarr;</div>
         </a>
 
-        <a class="app-card app-mint" href="/mintvision/" aria-label="Explore Mint Vision">
-          <img src="/assets/home/mintvision-icon.png" alt="Mint Vision">
-          <div class="app-title">MINT<br>VISION</div>
-          <div class="app-subtitle">AI Coin Identifier</div>
+        <a class="app-card app-jigsaw" href="/anglersjigsaw/" aria-label="Explore Angler's Jigsaw">
+          <img src="/assets/home/anglersjigsaw-icon.png" alt="Angler's Jigsaw">
+          <div class="app-title">ANGLER’S<br>JIGSAW</div>
+          <div class="app-subtitle">Catch-the-Puzzle Adventure</div>
           <div class="app-cta">Explore this app &rarr;</div>
         </a>
       </section>
