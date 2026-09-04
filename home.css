@@ -40,9 +40,9 @@ body {
 
 .apps {
   display: grid;
-  grid-template-columns: repeat(6, minmax(125px, 1fr));
+  grid-template-columns: repeat(8, minmax(96px, 1fr));
   align-items: start;
-  gap: clamp(18px, 2.2vw, 38px);
+  gap: clamp(10px, 1.4vw, 22px);
   margin: clamp(34px, 5vh, 62px) auto clamp(34px, 4vh, 52px);
   width: 100%;
 }
@@ -63,7 +63,7 @@ body {
   filter: brightness(1.08);
 }
 .app img {
-  width: min(100%, 242px);
+  width: min(100%, 154px);
   aspect-ratio: 1;
   object-fit: cover;
   display: block;
@@ -71,19 +71,19 @@ body {
   margin-bottom: 18px;
 }
 .app-title {
-  font-size: clamp(17px, 1.55vw, 25px);
+  font-size: clamp(14px, 1.15vw, 20px);
   line-height: 1.08;
   font-weight: 700;
   letter-spacing: .015em;
 }
 .app-subtitle {
   color: var(--muted);
-  font-size: clamp(13px, 1.05vw, 18px);
+  font-size: clamp(11px, .85vw, 15px);
   line-height: 1.25;
   margin-top: 12px;
   white-space: nowrap;
 }
-.app-anglers .app-title, .app-stillwater .app-title { color: #19c8d2; }
+.app-anglers .app-title, .app-arrows .app-title, .app-jigsaw .app-title, .app-stillwater .app-title { color: #19c8d2; }
 .app-sherpa .app-title { color: #8fa54e; }
 .app-hand .app-title { color: #72bd20; }
 .app-mint .app-title { color: #f2b434; }
@@ -113,7 +113,7 @@ footer {
 
 @media (max-width: 1050px) {
   .home-shell { justify-content: flex-start; }
-  .apps { grid-template-columns: repeat(6, minmax(100px, 1fr)); gap: 14px; }
+  .apps { grid-template-columns: repeat(8, minmax(78px, 1fr)); gap: 10px; }
   .app img { margin-bottom: 13px; }
   .trust-row { grid-template-columns: 110px minmax(350px, 560px) 150px; gap: 22px; }
 }
@@ -165,23 +165,23 @@ footer {
   }
 
   .apps {
-    gap: clamp(16px, 1.8vw, 28px);
+    gap: clamp(9px, 1.1vw, 17px);
     margin-top: clamp(24px, 3vh, 36px);
     margin-bottom: clamp(22px, 2.8vh, 34px);
   }
 
   .app img {
-    width: min(100%, 172px);
+    width: min(100%, 132px);
     margin-bottom: 12px;
   }
 
   .app-title {
-    font-size: clamp(16px, 1.3vw, 21px);
+    font-size: clamp(13px, 1vw, 18px);
   }
 
   .app-subtitle {
     margin-top: 8px;
-    font-size: clamp(12px, .9vw, 16px);
+    font-size: clamp(10px, .72vw, 13px);
   }
 
   .trust-row {
