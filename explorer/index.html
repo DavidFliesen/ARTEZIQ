@@ -3,82 +3,272 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="description" content="Choose an ARTEZIQ app and learn how to help test it as an ARTEZIQ Explorer.">
-  <title>ARTEZIQ Explorer</title>
-  <link rel="icon" href="/assets/home/mintvision-icon.png">
-  <link rel="stylesheet" href="../new-pages.css?v=1">
+  <meta name="description" content="Join the ARTEZIQ Explorer Program and choose an app to help explore and shape.">
+  <title>ARTEZIQ Explorer Program</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #050607;
+      --panel: #0e1113;
+      --panel-border: rgba(255,255,255,.09);
+      --text: #f5f5f5;
+      --muted: #c7cdd1;
+      --gold: #dca52e;
+      --gold-soft: rgba(220,165,46,.18);
+      --cyan: #19c8d2;
+      --green: #8fa54e;
+      --lime: #72bd20;
+      --mint: #f2b434;
+      --orange: #ff6727;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--bg); }
+    body {
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .page {
+      min-height: 100svh;
+      width: min(100%, 1400px);
+      margin: 0 auto;
+      padding: clamp(18px, 2.2vh, 24px) clamp(18px, 2.6vw, 32px) 18px;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(14px, 1.8vh, 20px);
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .back-link {
+      justify-self: start;
+      color: var(--gold);
+      font-weight: 700;
+      font-size: clamp(14px, 1vw, 18px);
+    }
+
+    .brand {
+      justify-self: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .brand img {
+      display: block;
+      height: clamp(28px, 3.2vw, 40px);
+      width: auto;
+    }
+
+    .hero {
+      width: 100%;
+      display: block;
+      border-radius: 18px;
+      border: 1px solid var(--panel-border);
+      box-shadow: 0 18px 50px rgba(0,0,0,.35);
+    }
+
+    .content {
+      background: linear-gradient(180deg, rgba(17,20,23,.92), rgba(12,14,16,.95));
+      border: 1px solid var(--panel-border);
+      border-radius: 20px;
+      padding: clamp(16px, 2vw, 24px);
+      box-shadow: 0 14px 36px rgba(0,0,0,.24);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
+    .intro {
+      text-align: center;
+    }
+
+    .intro h1 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 3vw, 42px);
+      line-height: 1.08;
+    }
+
+    .intro p {
+      margin: 0 auto;
+      max-width: 900px;
+      color: var(--muted);
+      font-size: clamp(14px, 1.1vw, 18px);
+      line-height: 1.45;
+    }
+
+    .apps {
+      flex: 1 1 auto;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: clamp(12px, 1.15vw, 18px);
+      align-items: stretch;
+      min-height: 0;
+    }
+
+    .app-card {
+      background: radial-gradient(circle at 50% 0%, rgba(255,255,255,.04), rgba(255,255,255,.015) 48%, rgba(255,255,255,.02) 100%), #0a0d0f;
+      border: 1px solid rgba(255,255,255,.09);
+      border-radius: 22px;
+      padding: 14px 12px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      text-align: center;
+      min-width: 0;
+      outline-offset: 8px;
+      transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease, filter .18s ease;
+    }
+
+    .app-card:hover,
+    .app-card:focus-visible {
+      transform: translateY(-4px);
+      border-color: rgba(220,165,46,.45);
+      box-shadow: 0 12px 28px rgba(0,0,0,.35);
+      filter: brightness(1.04);
+    }
+
+    .app-card img {
+      width: min(100%, 146px);
+      aspect-ratio: 1;
+      object-fit: cover;
+      border-radius: 22%;
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    .app-title {
+      font-size: clamp(16px, 1.25vw, 24px);
+      line-height: 1.04;
+      font-weight: 700;
+      letter-spacing: .015em;
+      margin: 0;
+    }
+
+    .app-subtitle {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: clamp(12px, .95vw, 16px);
+      line-height: 1.25;
+      min-height: 2.4em;
+    }
+
+    .app-cta {
+      margin-top: auto;
+      padding-top: 12px;
+      color: var(--gold);
+      font-weight: 700;
+      font-size: clamp(12px, .95vw, 15px);
+    }
+
+    .app-anglers .app-title { color: var(--cyan); }
+    .app-sherpa .app-title { color: var(--green); }
+    .app-hand .app-title { color: var(--lime); }
+    .app-stillwater .app-title { color: var(--cyan); }
+    .app-mint .app-title { color: var(--mint); }
+
+    .footer-note {
+      text-align: center;
+      color: rgba(220,165,46,.95);
+      font-size: clamp(12px, .9vw, 15px);
+      letter-spacing: .02em;
+      margin-top: 2px;
+    }
+
+    @media (max-width: 1100px) {
+      .apps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .page { min-height: auto; }
+    }
+
+    @media (max-width: 760px) {
+      .page { padding: 16px 14px 18px; gap: 12px; }
+      .topbar {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+      }
+      .back-link { justify-self: start; width: 100%; }
+      .brand { order: -1; }
+      .content { padding: 16px 14px 18px; }
+      .apps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .app-card img { width: min(100%, 132px); }
+    }
+
+    @media (max-width: 430px) {
+      .apps { grid-template-columns: 1fr; }
+      .intro h1 { font-size: 26px; }
+    }
+  </style>
 </head>
 <body>
-  <div class="page-shell">
-    <header class="site-header">
-      <a class="header-link" href="/">&larr; ARTEZIQ Home</a>
-      <a class="brand" href="/" aria-label="Return to the ARTEZIQ home page">
+  <main class="page">
+    <header class="topbar">
+      <a class="back-link" href="/">&larr; ARTEZIQ Home</a>
+      <a class="brand" href="/" aria-label="ARTEZIQ Home">
         <img src="/assets/arteziq-logo.png" alt="ARTEZIQ">
       </a>
       <span aria-hidden="true"></span>
     </header>
 
-    <main class="explorer-main">
-      <section class="explorer-intro">
-        <p class="eyebrow">Help shape what comes next</p>
-        <h1>ARTEZIQ Explorer</h1>
-        <p>Choose the app you would like to explore. Each link takes you to that app's page, where you can learn more about it and find its Explorer opportunity.</p>
-      </section>
+    <img class="hero" src="/assets/arteziq-explorer-program.png" alt="ARTEZIQ Explorer Program">
 
-      <section class="explorer-grid" aria-label="ARTEZIQ apps accepting Explorer interest">
-        <a class="explorer-card" href="https://arteziq.com/anglersnavigator/">
-          <img class="card-image" src="/assets/home/anglersnavigator-icon.png" alt="" width="104" height="104">
-          <div>
-            <span class="card-kicker">ARTEZIQ Explorer</span>
-            <h2>Angler's Navigator</h2>
-            <p>Fishing recommendations tailored to where, when, and how you fish.</p>
-            <span class="card-action">Explore this app &rarr;</span>
-          </div>
+    <section class="content" aria-labelledby="explorer-heading">
+      <div class="intro">
+        <h1 id="explorer-heading">Choose an app to explore</h1>
+        <p>Select an ARTEZIQ app below to learn more and, where available, request to become an Explorer who helps test and shape what comes next.</p>
+      </div>
+
+      <section class="apps" aria-label="Apps available to explore">
+        <a class="app-card app-anglers" href="/anglersnavigator/" aria-label="Explore Angler's Navigator">
+          <img src="/assets/home/anglersnavigator-icon.png" alt="Angler's Navigator">
+          <div class="app-title">ANGLER’S<br>NAVIGATOR</div>
+          <div class="app-subtitle">Tackle &amp; Bait Edition</div>
+          <div class="app-cta">Explore this app &rarr;</div>
         </a>
 
-        <a class="explorer-card" href="https://arteziq.com/sherpacaddie/">
-          <img class="card-image" src="/assets/home/sherpa-caddie-icon.png?v=2" alt="" width="104" height="104">
-          <div>
-            <span class="card-kicker">ARTEZIQ Explorer</span>
-            <h2>Sherpa Caddie</h2>
-            <p>A beginner-friendly golf guide and coach for smarter, calmer rounds.</p>
-            <span class="card-action">Explore this app &rarr;</span>
-          </div>
+        <a class="app-card app-sherpa" href="/sherpacaddie/" aria-label="Explore Sherpa Caddie">
+          <img src="/assets/home/sherpa-caddie-icon.png" alt="Sherpa Caddie">
+          <div class="app-title">SHERPA<br>CADDIE</div>
+          <div class="app-subtitle">Golf Guide &amp; Coach</div>
+          <div class="app-cta">Explore this app &rarr;</div>
         </a>
 
-        <a class="explorer-card" href="https://arteziq.com/handoverfoot/">
-          <img class="card-image" src="/assets/home/handoverfoot-icon.png" alt="" width="104" height="104">
-          <div>
-            <span class="card-kicker">ARTEZIQ Explorer</span>
-            <h2>Hand Over Foot</h2>
-            <p>A polished digital version of the classic rummy-style card game.</p>
-            <span class="card-action">Explore this app &rarr;</span>
-          </div>
+        <a class="app-card app-hand" href="/handoverfoot/" aria-label="Explore Hand Over Foot">
+          <img src="/assets/home/handoverfoot-icon.png" alt="Hand Over Foot">
+          <div class="app-title">HAND OVER<br>FOOT</div>
+          <div class="app-subtitle">Classic Card Game</div>
+          <div class="app-cta">Explore this app &rarr;</div>
         </a>
 
-        <a class="explorer-card" href="https://arteziq.com/anglersarrows">
-          <img class="card-image" src="/anglersarrows/assets/gameplay.webp" alt="" width="104" height="104">
-          <div>
-            <span class="card-kicker">ARTEZIQ Explorer</span>
-            <h2>Angler's Arrows</h2>
-            <p>Clear arrow puzzles, reveal each catch, and learn to recognize fish.</p>
-            <span class="card-action">Explore this app &rarr;</span>
-          </div>
+        <a class="app-card app-stillwater" href="/stillwater/" aria-label="Explore Stillwater Chair Tai Chi">
+          <img src="/assets/home/stillwater-icon.png" alt="Stillwater Chair Tai Chi">
+          <div class="app-title">STILLWATER<br>CHAIR TAI CHI</div>
+          <div class="app-subtitle">Tai Chi &amp; Qigong</div>
+          <div class="app-cta">Explore this app &rarr;</div>
         </a>
 
-        <a class="explorer-card" href="https://arteziq.com/anglersjigsaw">
-          <img class="card-image" src="/anglersjigsaw/assets/home.webp" alt="" width="104" height="104">
-          <div>
-            <span class="card-kicker">ARTEZIQ Explorer</span>
-            <h2>Angler's Jigsaw</h2>
-            <p>Complete fishing puzzles, collect your catch, and discover each species.</p>
-            <span class="card-action">Explore this app &rarr;</span>
-          </div>
+        <a class="app-card app-mint" href="/mintvision/" aria-label="Explore Mint Vision">
+          <img src="/assets/home/mintvision-icon.png" alt="Mint Vision">
+          <div class="app-title">MINT<br>VISION</div>
+          <div class="app-subtitle">AI Coin Identifier</div>
+          <div class="app-cta">Explore this app &rarr;</div>
         </a>
       </section>
-    </main>
 
-    <footer class="site-footer">&copy; 2026 ARTEZIQ. All rights reserved.</footer>
-  </div>
+      <div class="footer-note">&copy; 2026 ARTEZIQ. All rights reserved.</div>
+    </section>
+  </main>
 </body>
 </html>
