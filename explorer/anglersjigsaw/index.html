@@ -49,6 +49,12 @@ input:focus,select:focus,textarea:focus{outline:2px solid rgba(39,197,243,.35);b
 .submit:disabled{opacity:.45;cursor:not-allowed}
 .note{font-size:14px;color:var(--muted);line-height:1.45}
 .status{display:none;margin-top:16px;padding:14px;border-radius:10px;background:#102026;border:1px solid #2b5866;line-height:1.45}
+.status.error{background:#2a1114;border-color:#a94752;color:#ffd9dd}
+.status.success{background:#10261a;border-color:#3f7d55;color:#dff5e6}
+.status ul{margin:8px 0 0 20px;padding:0}
+.input-error{border-color:#ff7272!important;outline:2px solid rgba(255,114,114,.28)!important}
+.signature-wrap.input-error{border-color:#ff7272!important;box-shadow:0 0 0 2px rgba(255,114,114,.28)}
+.accept-row.input-error{outline:2px solid rgba(255,114,114,.45);background:#2a1618}
 .consideration{margin:28px auto 0;text-align:center;color:#c8d1d4;font-size:15px;line-height:1.5;max-width:850px}
 footer{text-align:center;color:#89979c;padding:32px 20px 42px;font-size:14px}
 @media(max-width:700px){
@@ -78,9 +84,10 @@ footer{text-align:center;color:#89979c;padding:32px 20px 42px;font-size:14px}
     <p>Explorers help evaluate Angler's Jigsaw while it is still under development. Your feedback can help improve puzzle difficulty, controls, fish collection features, species information, and overall game flow. You may be asked to use pre-release software in real-world situations, report bugs or confusing behavior, and provide practical feedback that helps improve the experience before release. Explorer participation is voluntary and unpaid.</p>
   </section>
 
-  <form id="explorerForm" novalidate>
+  <form id="explorerForm" novalidate
+    onsubmit="if(!window.ARTEZIQ_EXPLORER_READY){var s=document.getElementById('statusBox');if(s){s.innerHTML='<strong>The form could not initialize.</strong><br>Your information has not been submitted. Please reload this page and try again. If the problem continues, contact ARTEZIQ.';s.className='status error';s.style.display='block';s.scrollIntoView({behavior:'smooth',block:'center'});}return false;}">
     <input type="hidden" id="formStartedAt" name="formStartedAt">
-    <input type="hidden" id="formVersion" name="formVersion" value="2026-08-12-community-nda-2">
+    <input type="hidden" id="formVersion" name="formVersion" value="2026-09-04-signature-validation-fix-1">
 
     <section class="card">
       <h2>Contact Information</h2>
@@ -187,7 +194,7 @@ footer{text-align:center;color:#89979c;padding:32px 20px 42px;font-size:14px}
       <h2>Submit Explorer Request</h2>
       <p class="lead">This form includes anti-spam validation and server-side checks. After deployment, your signed NDA PDF can be emailed automatically to the address you provide.</p>
       <button class="submit" id="submitButton" type="submit">Submit Explorer Program Request</button>
-      <div class="status" id="statusBox"></div>
+      <div class="status" id="statusBox" role="alert" aria-live="assertive" aria-atomic="true"></div>
       <p class="note">All required fields, the agreement checkbox, and the handwritten signature are required.</p>
     </section>
   </form>
@@ -241,8 +248,14 @@ fullName.addEventListener('input', () => {
     };
   }
   function start(e) {
-    e.preventDefault(); drawing = true;
-    const p = pos(e); ctx.beginPath(); ctx.moveTo(p.x,p.y);
+    e.preventDefault();
+    drawing = true;
+    if (canvas.setPointerCapture && e.pointerId !== undefined) {
+      try { canvas.setPointerCapture(e.pointerId); } catch (_) {}
+    }
+    const p = pos(e);
+    ctx.beginPath();
+    ctx.moveTo(p.x,p.y);
   }
   function move(e) {
     if (!drawing) return; e.preventDefault();
@@ -255,6 +268,7 @@ fullName.addEventListener('input', () => {
   canvas.addEventListener('pointermove', move);
   canvas.addEventListener('pointerup', end);
   canvas.addEventListener('pointerleave', end);
+  canvas.addEventListener('pointercancel', end);
   document.getElementById('clearSignature').addEventListener('click', () => {
     ctx.clearRect(0,0,canvas.width,canvas.height); signed = false;
   });
@@ -358,18 +372,113 @@ fullName.addEventListener('input', () => {
     return { doc, agreementId, signedAt };
   }
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    statusBox.style.display = 'none';
-    statusBox.textContent = '';
+  const fieldLabels = {
+    fullName: 'Full Name',
+    email: 'Email',
+    phone: 'Phone',
+    cityState: 'City / State',
+    contactMethod: 'Preferred Contact Method',
+    device: 'Primary Testing Device',
+    experience: 'Relevant experience / intended use',
+    ndaName: 'Tester Name',
+    ndaEmail: 'NDA Email',
+    ndaDate: 'NDA Date',
+    agree: 'NDA agreement checkbox'
+  };
 
-    if (!form.reportValidity()) return;
-    if (!signed) {
-      statusBox.textContent = 'Please sign the NDA before submitting.';
-      statusBox.style.display = 'block';
-      canvas.scrollIntoView({behavior:'smooth',block:'center'});
+  function clearValidationMarks() {
+    form.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
+    statusBox.className = 'status';
+    statusBox.style.display = 'none';
+    statusBox.innerHTML = '';
+  }
+
+  function markError(el) {
+    if (!el) return;
+    if (el === canvas) {
+      const wrap = canvas.closest('.signature-wrap');
+      if (wrap) wrap.classList.add('input-error');
       return;
     }
+    if (el.id === 'agree') {
+      const row = el.closest('.accept-row');
+      if (row) row.classList.add('input-error');
+      return;
+    }
+    el.classList.add('input-error');
+  }
+
+  function showErrors(items) {
+    const unique = [...new Set(items.filter(Boolean))];
+    statusBox.className = 'status error';
+    statusBox.innerHTML =
+      '<strong>Please correct the following before submitting:</strong>' +
+      '<ul>' + unique.map(item => '<li>' + item + '</li>').join('') + '</ul>' +
+      '<div style="margin-top:10px">Your entries are still on this page and have not been erased.</div>';
+    statusBox.style.display = 'block';
+    statusBox.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+
+  function validateClient() {
+    clearValidationMarks();
+    const errors = [];
+
+    const requiredIds = [
+      'fullName','email','phone','cityState','contactMethod','device',
+      'experience','ndaName','ndaEmail','ndaDate'
+    ];
+
+    requiredIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (!el.value.trim()) {
+        errors.push(fieldLabels[id] + ' is required.');
+        markError(el);
+      } else if (!el.checkValidity()) {
+        errors.push(fieldLabels[id] + ': ' + (el.validationMessage || 'Please enter a valid value.'));
+        markError(el);
+      }
+    });
+
+    const normalizedName = value => String(value || '').replace(/\s+/g, ' ').trim();
+
+    if (normalizedName(ndaName.value) && normalizedName(fullName.value) &&
+        normalizedName(ndaName.value) !== normalizedName(fullName.value)) {
+      errors.push('Tester Name must match Full Name.');
+      markError(ndaName);
+    }
+
+    if (ndaEmail.value.trim() && email.value.trim() &&
+        ndaEmail.value.trim().toLowerCase() !== email.value.trim().toLowerCase()) {
+      errors.push('NDA Email must match the contact Email.');
+      markError(ndaEmail);
+    }
+
+    const agree = document.getElementById('agree');
+    if (!agree.checked) {
+      errors.push('You must check the NDA agreement box.');
+      markError(agree);
+    }
+
+    if (!signed) {
+      errors.push('A handwritten signature is required in the signature box.');
+      markError(canvas);
+    }
+
+    if (errors.length) {
+      showErrors(errors);
+      return false;
+    }
+    return true;
+  }
+
+  // Flag used by the inline form fallback to prevent silent page reloads.
+  window.ARTEZIQ_EXPLORER_READY = true;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    if (!validateClient()) return;
 
     submitButton.disabled = true;
     submitButton.textContent = 'Preparing signed NDA...';
@@ -384,9 +493,10 @@ fullName.addEventListener('input', () => {
       data.userAgent = navigator.userAgent || '';
       data.submissionToken = SUBMISSION_TOKEN;
 
-      if (data.appBeingTested !== 'Angler's Jigsaw') {
+      if (data.appBeingTested !== "Angler's Jigsaw") {
         throw new Error("This Explorer page is configured for Angler's Jigsaw.");
       }
+
       if (data.company) {
         throw new Error('Submission could not be accepted.');
       }
@@ -394,30 +504,58 @@ fullName.addEventListener('input', () => {
       const pdfResult = await makePdf(data);
       data.agreementId = pdfResult.agreementId;
       data.signedAt = pdfResult.signedAt;
-      const filename = 'ARTEZIQ-Explorer-NDA-' + data.ndaName.replace(/[^a-z0-9]+/gi,'-') + '.pdf';
+
+      const filename =
+        'ARTEZIQ-Explorer-NDA-' +
+        data.ndaName.replace(/[^a-z0-9]+/gi,'-') +
+        '.pdf';
+
       const pdfDataUri = pdfResult.doc.output('datauristring');
       const pdfBase64 = pdfDataUri.split(',')[1];
 
-      if (SUBMIT_ENDPOINT) {
-        submitButton.textContent = 'Submitting request...';
-        const response = await fetch(SUBMIT_ENDPOINT, {
+      if (!SUBMIT_ENDPOINT) {
+        throw new Error('The ARTEZIQ submission service is not configured for this page.');
+      }
+
+      submitButton.textContent = 'Submitting request...';
+
+      let response;
+      try {
+        response = await fetch(SUBMIT_ENDPOINT, {
           method:'POST',
           headers:{'Content-Type':'text/plain;charset=utf-8'},
           body:JSON.stringify({...data,pdfBase64,filename})
         });
-        const result = await response.json();
-        if (!result.ok) throw new Error(result.error || 'Submission failed.');
-        statusBox.innerHTML = '<strong>Request submitted.</strong> A signed PDF copy of your NDA has been emailed to ' + data.email + '.';
-      } else {
-        pdfResult.doc.save(filename);
-        statusBox.innerHTML = '<strong>Your completed NDA PDF has been generated.</strong> The automatic email/submission service still needs to be connected before this public form can transmit applications.';
+      } catch (_) {
+        throw new Error('Could not reach the ARTEZIQ submission service. Check your internet connection and try again.');
       }
 
+      const rawResponse = await response.text();
+      let result;
+      try {
+        result = JSON.parse(rawResponse);
+      } catch (_) {
+        throw new Error('The submission service returned an unexpected response. Please try again. If the problem continues, contact ARTEZIQ.');
+      }
+
+      if (!result.ok) {
+        throw new Error(result.error || 'The submission service did not accept the request.');
+      }
+
+      statusBox.className = 'status success';
+      statusBox.innerHTML =
+        '<strong>Request submitted successfully.</strong><br>' +
+        'A signed PDF copy of your NDA has been emailed to ' + data.email + '.';
       statusBox.style.display = 'block';
       statusBox.scrollIntoView({behavior:'smooth',block:'center'});
     } catch (err) {
-      statusBox.textContent = 'Unable to complete the request: ' + err.message;
+      statusBox.className = 'status error';
+      statusBox.innerHTML =
+        '<strong>Unable to submit your Explorer request.</strong><br>' +
+        String(err.message || err) +
+        '<br><br><strong>Your entries are still on this page.</strong> Correct the problem and press Submit again.';
       statusBox.style.display = 'block';
+      statusBox.scrollIntoView({behavior:'smooth',block:'center'});
     } finally {
       submitButton.disabled = false;
       submitButton.textContent = 'Submit Explorer Program Request';
