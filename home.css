@@ -102,6 +102,24 @@ body {
 .platform { justify-self: center; }
 .veteran { width: 100%; }
 
+.veteran-status {
+  min-height: 74px;
+  padding: 12px 28px;
+  border: 2px solid var(--gold);
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #f4f4f4;
+  font-size: clamp(18px, 1.7vw, 27px);
+  line-height: 1.15;
+  font-weight: 500;
+  letter-spacing: .01em;
+  background: rgba(220,165,46,.025);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.025);
+}
+
 footer {
   margin-top: clamp(25px, 3vh, 40px);
   text-align: center;
@@ -136,6 +154,7 @@ footer {
     max-width: 620px;
   }
   .veteran { grid-column: 1 / -1; grid-row: 1; width: min(100%, 540px); justify-self: center; }
+  .veteran-status { min-height: 66px; padding: 11px 18px; font-size: clamp(17px, 5vw, 23px); }
   .ios { justify-self: end; }
   .android { justify-self: start; }
 }
