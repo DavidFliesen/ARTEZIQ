@@ -1,0 +1,20 @@
+ARTEZIQ GitHub Pages — GA4/VPN diagnostic + README handoff
+
+Source: latest GitHub README.md, and the two release files from ARTEZIQ-GA4-VPN-region-fix.zip.
+
+Upload to the same paths in DavidFliesen/ARTEZIQ on main:
+  README.md
+  analytics.js
+  privacy/index.html
+
+The documentation-only change is README.md. The other two files are byte-for-byte copies
+of the diagnostic ZIP that was already supplied in the conversation. Include them if the
+live repository still has the older version (it did at the time of this review).
+
+After GitHub Pages publishes, open:
+  https://arteziq.com/?ga_debug=1
+
+US expectation: country=US, region=standard, GA4 loaded=yes (unless you previously declined).
+Swiss VPN expectation: country=CH, region=consent-required, GA4 loaded=no before accepting.
+
+No Google Apps Script redeployment is required for these documentation/analytics changes.
