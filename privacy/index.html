@@ -181,13 +181,23 @@
   <p>
     For visitors detected in the EEA, United Kingdom, or Switzerland, Google Analytics does not load until the
     visitor chooses <strong>Allow analytics</strong>. For visitors outside those regions, GA4 may load automatically
-    unless the visitor has previously declined analytics. If country detection fails or times out, ARTEZIQ uses
-    the conservative consent flow and does not load GA4 until permission is granted.
+    unless the visitor has previously declined analytics. If the country cannot be determined, ARTEZIQ does not load GA4 and does not display the
+    automatic consent interface. This avoids incorrectly treating an EEA/UK/Swiss visitor as outside
+    the consent-required regions.
   </p>
   <p>
     Visitors in the EEA, United Kingdom, or Switzerland are shown a centered <strong>Privacy &amp; Analytics</strong> text link immediately above the site copyright so they can change their analytics choice.
     Advertising storage, ad-user-data, and ad-personalization signals remain denied by ARTEZIQ’s site configuration.
   </p>
+  <p>
+    To change your analytics choice at any time, <a href="#privacy-preferences" id="arteziq-open-preferences">open analytics preferences</a>.
+  </p>
+  <script>
+    document.getElementById('arteziq-open-preferences').addEventListener('click', function (event) {
+      event.preventDefault();
+      if (window.arteziqAnalytics) window.arteziqAnalytics.openPreferences();
+    });
+  </script>
 
   <h2>11. Children</h2>
   <p>
