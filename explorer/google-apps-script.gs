@@ -34,7 +34,8 @@ const FIELD_LIMITS = {
   filename: 180,
   agreementId: 80,
   signedAt: 80,
-  formVersion: 40,
+  formVersion: 80,
+  privacyNoticeVersion: 80,
   userAgent: 400
 };
 
@@ -51,12 +52,13 @@ function doPost(e) {
     validateRequired_(data, [
       'appBeingTested','fullName','email','phone','cityState','contactMethod','device',
       'experience','ndaName','ndaEmail','ndaDate','pdfBase64','filename','formStartedAt',
-      'formVersion','submissionToken'
+      'formVersion','privacyNoticeVersion','submissionToken'
     ]);
 
     if (data.company) throw new Error('Submission rejected.'); // honeypot
     if (data.submissionToken !== SHARED_SUBMISSION_TOKEN) throw new Error('Invalid submission token.');
     if (!data.agreed) throw new Error('NDA agreement was not accepted.');
+    if (!data.ageConfirmed) throw new Error('You must confirm that you are at least 18 years old.');
     if (!ALLOWED_APPS.includes(data.appBeingTested)) throw new Error('Explorer applications are not open for that app.');
     if (!isValidEmail_(data.email)) throw new Error('Please provide a valid email address.');
     if (!isValidEmail_(data.ndaEmail)) throw new Error('Please provide a valid NDA email address.');
@@ -107,6 +109,7 @@ function doPost(e) {
         'Agreement ID: ' + (data.agreementId || 'Not provided') + '\n' +
         'Signed: ' + (data.signedAt || 'Not provided') + '\n' +
         'Form Version: ' + data.formVersion + '\n' +
+        'Privacy Notice Version: ' + data.privacyNoticeVersion + '\n' +
         'User Agent: ' + (data.userAgent || 'Not provided') + '\n\n' +
         'Experience / intended use:\n' + data.experience;
 
@@ -168,7 +171,11 @@ function validateFormTiming_(startedAt) {
 
 function enforceRateLimit_(email, appName) {
   const cache = CacheService.getScriptCache();
-  const key = 'exp:' + Utilities.base64EncodeWebSafe((email + '|' + appName).toLowerCase());
+  const digest = Utilities.computeDigest(
+    Utilities.DigestAlgorithm.SHA_256,
+    (email + '|' + appName).toLowerCase()
+  );
+  const key = 'exp:' + Utilities.base64EncodeWebSafe(digest).slice(0, 48);
   if (cache.get(key)) {
     throw new Error('A recent submission for this email already exists. Please wait before submitting again.');
   }
