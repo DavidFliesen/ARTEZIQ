@@ -56,9 +56,9 @@
   </p>
 
   <h2>3. Information we collect</h2>
-  <h3>Website analytics — only after you allow analytics</h3>
+  <h3>Website analytics and regional consent</h3>
   <p>
-    If you allow analytics, Google Analytics 4 (GA4) may process information such as page URLs, referring
+    When analytics is active—automatically in countries where consent is not required, or following an affirmative choice in the EEA, UK, and Switzerland—Google Analytics 4 (GA4) may process information such as page URLs, referring
     pages, campaign parameters (for example UTM source/medium/campaign), browser/device information,
     approximate location derived by Google, and non-identifying interaction events such as an app link
     click or a successful Explorer submission. ARTEZIQ does not intentionally send names, email addresses,
@@ -92,13 +92,15 @@
     <tr><th>Purpose</th><th>Typical legal basis where GDPR/UK GDPR applies</th></tr>
     <tr><td>Reviewing an Explorer request, contacting an applicant, administering testing, and creating/administering the NDA</td><td>Steps taken at your request before entering an Explorer relationship and performance/administration of that relationship or agreement</td></tr>
     <tr><td>Security, anti-spam, rate limiting, troubleshooting, and protecting ARTEZIQ systems</td><td>ARTEZIQ’s legitimate interests in operating a secure and reliable service</td></tr>
-    <tr><td>Optional website analytics and campaign measurement</td><td>Your consent</td></tr>
+    <tr><td>Website analytics and campaign measurement</td><td>Consent where required, including for EEA/UK/Swiss analytics cookies and similar technologies</td></tr>
     <tr><td>Keeping records needed to establish, exercise, or defend legal rights or comply with law</td><td>Legal obligation and/or legitimate interests, as applicable</td></tr>
     <tr><td>Product research through surveys</td><td>Legitimate interests and, where required, consent</td></tr>
   </table>
   <p>
-    You may withdraw analytics consent at any time using the <strong>Privacy &amp; Analytics</strong>
-    control displayed on the site. Withdrawal does not affect processing that occurred before withdrawal.
+    You may withdraw analytics consent or opt out at any time. In the EEA, UK, and Switzerland use the
+    <strong>Privacy &amp; Analytics</strong> link displayed on the site. Visitors elsewhere can use
+    the <strong>Open analytics preferences</strong> link in Section 10 below. Withdrawal does not
+    affect processing that occurred before withdrawal.
   </p>
 
   <h2>5. Where information is processed and stored</h2>
@@ -173,9 +175,9 @@
   <h2>10. Analytics choice, regional detection, and local storage</h2>
   <p>
     ARTEZIQ uses a coarse country lookup to decide whether the stricter analytics-consent flow should be shown.
-    The site requests a country determination from <strong>Country.is (api.country.is)</strong>. Like any Internet
+    The site requests a country determination from <strong>Country.is (api.country.is)</strong> on each page visit. Like any Internet
     request, the visitor’s IP address is visible to that service while the request is processed. ARTEZIQ does
-    not store the returned IP address and stores only a short regional classification in the visitor’s browser.
+    not store the returned IP address and does not cache the regional classification in the visitor’s browser. The country is checked again on each page load so a VPN change or international travel does not reuse a previous country result.
     Country.is states that its public service does not log requests.
   </p>
   <p>
