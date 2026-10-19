@@ -5,7 +5,7 @@ GA4 Measurement ID: G-Z94JEHVXL8
 - EEA / UK / Switzerland: basic consent mode; GA4 does not load until accepted.
 - Other regions: GA4 loads automatically unless previously declined.
 - Country lookup uses api.country.is only to determine a two-letter country code.
-- If country lookup fails/times out, the conservative consent banner is shown.
+- Consent UI is shown only when country detection identifies EEA / UK / Switzerland.
 - Advertising storage, ad user data, and ad personalization stay denied everywhere.
 */
 (() => {
@@ -143,8 +143,8 @@ GA4 Measurement ID: G-Z94JEHVXL8
       #arteziq-consent[hidden]{display:none!important} #arteziq-consent strong{color:#fff} #arteziq-consent p{margin:0 0 12px;color:#d9dde0;font-size:14px} #arteziq-consent a{color:#f1c75b;text-decoration:underline}
       .arteziq-consent-actions{display:flex;gap:10px;flex-wrap:wrap}.arteziq-consent-actions button{border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer;font-family:inherit;font-size:14px}
       #arteziq-accept-analytics{background:#dca52e;color:#090909;border:1px solid #dca52e} #arteziq-decline-analytics{background:transparent;color:#fff;border:1px solid #7d858a}
-      #arteziq-privacy-control{position:fixed;left:10px;bottom:10px;z-index:2147482000;background:rgba(8,10,12,.92);color:#e8d59c;border:1px solid rgba(220,165,46,.55);border-radius:999px;padding:7px 11px;font:12px Arial,Helvetica,sans-serif;cursor:pointer;box-shadow:0 4px 18px rgba(0,0,0,.35);opacity:.82}
-      #arteziq-privacy-control:hover,#arteziq-privacy-control:focus-visible{opacity:1}
+      #arteziq-privacy-control{display:block;width:fit-content;margin:0 auto 10px;padding:0;background:transparent;border:0;color:#d9bf71;font:13px Arial,Helvetica,sans-serif;line-height:1.3;text-align:center;text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+      #arteziq-privacy-control:hover,#arteziq-privacy-control:focus-visible{color:#f1d36c}
       @media(max-width:520px){#arteziq-consent{left:10px;right:10px;bottom:10px;padding:15px}.arteziq-consent-actions button{flex:1 1 140px}}
     `;
     document.head.appendChild(style);
@@ -164,15 +164,25 @@ GA4 Measurement ID: G-Z94JEHVXL8
     }
     let control=document.getElementById('arteziq-privacy-control');
     if (!control) {
-      control=document.createElement('button'); control.type='button'; control.id='arteziq-privacy-control'; control.textContent='Privacy & Analytics';
+      control=document.createElement('a');
+      control.id='arteziq-privacy-control';
+      control.href='/privacy/';
+      control.textContent='Privacy & Analytics';
       control.setAttribute('aria-label','Open privacy and analytics choices');
-      control.addEventListener('click',()=>{panel.hidden=false;});
-      document.body.appendChild(control);
+      control.addEventListener('click',(event)=>{event.preventDefault();panel.hidden=false;});
+
+      const footer=document.querySelector('footer');
+      if(footer&&footer.parentNode) footer.parentNode.insertBefore(control,footer);
+      else document.body.appendChild(control);
     }
-    return panel;
+    return {panel,control};
   }
 
-  function showConsentBanner(){ ensureConsentUI().hidden=false; }
+  function showConsentBanner(){
+    const ui=ensureConsentUI();
+    ui.control.hidden=false;
+    ui.panel.hidden=false;
+  }
 
   function setupAutomaticEvents() {
     const pagePath=normalizePath(location.href);
@@ -200,16 +210,49 @@ GA4 Measurement ID: G-Z94JEHVXL8
   }
 
   async function initializePrivacyAndAnalytics() {
-    const panel=ensureConsentUI(); panel.hidden=true;
-    const explicitChoice=readChoice();
-    if(explicitChoice==='granted'){loadGoogleAnalytics();return;}
-    if(explicitChoice==='denied'){denyAnalytics();return;}
+    const ui=ensureConsentUI();
+    ui.panel.hidden=true;
+    ui.control.hidden=true;
+
     regionClass=await detectRegionClass();
-    if(regionClass==='standard'){loadGoogleAnalytics();return;}
-    denyAnalytics(); showConsentBanner();
+
+    // Outside EEA / UK / Switzerland: no consent UI; GA4 loads automatically.
+    if(regionClass==='standard'){
+      loadGoogleAnalytics();
+      return;
+    }
+
+    // EEA / UK / Switzerland: keep the text link available and use basic consent mode.
+    if(regionClass==='consent-required'){
+      ui.control.hidden=false;
+      const explicitChoice=readChoice();
+
+      if(explicitChoice==='granted'){
+        loadGoogleAnalytics();
+        return;
+      }
+
+      if(explicitChoice==='denied'){
+        denyAnalytics();
+        return;
+      }
+
+      denyAnalytics();
+      ui.panel.hidden=false;
+      return;
+    }
+
+    // If country cannot be determined, follow the requested no-popup behavior.
+    loadGoogleAnalytics();
   }
 
-  window.arteziqAnalytics={track,openPreferences(){showConsentBanner();},getConsent:readChoice,getRegionClass(){return regionClass;},measurementId:MEASUREMENT_ID};
+  window.arteziqAnalytics={
+    track,
+    openPreferences(){if(regionClass==='consent-required')showConsentBanner();},
+    getConsent:readChoice,
+    getRegionClass(){return regionClass;},
+    measurementId:MEASUREMENT_ID
+  };
 
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>{setupAutomaticEvents();initializePrivacyAndAnalytics();});
   else {setupAutomaticEvents();initializePrivacyAndAnalytics();}
