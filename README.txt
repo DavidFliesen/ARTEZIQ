@@ -1,38 +1,40 @@
-ARTEZIQ GA4 Consent Visibility Fix (2026-10-19)
+ARTEZIQ GA4 VPN / Switzerland Consent Correction
 
-Upload these two replacements into DavidFliesen/ARTEZIQ:
+REPLACE ONLY THESE TWO EXISTING FILES IN YOUR GITHUB REPOSITORY:
   analytics.js
   privacy/index.html
 
-CONFIRMED CAUSE:
-The earlier CSS gave #arteziq-privacy-control a display:block declaration.
-This overrode the HTML hidden attribute, so the privacy link was visible
-even when the US/non-EEA code hid it. Clicking that link opened the consent
-panel. This did not by itself prove GA4 was failing to track US visitors.
+NO GOOGLE ANALYTICS PROPERTY OR GOOGLE APPS SCRIPT CHANGES NEEDED.
 
-FIXED:
-- Explicit CSS rule #arteziq-privacy-control[hidden]{display:none!important}.
-- The link is created as hidden, and only revealed for detected EEA/UK/CH.
-- US/non-EEA: no consent banner or homepage/footer link, GA4 loads automatically
-  unless the visitor explicitly declined in the past.
-- Detected EEA/UK/CH: banner and centered text link above the copyright; GA4
-  does not load until the visitor accepts.
-- Unknown region or failed country lookup: no popup and no GA4. This
-  fail-closed behavior prioritizes EEA visitor privacy; it may cause some
-  sessions to be missed if the lookup cannot be completed.
-- The dedicated /privacy/ page contains an Open analytics preferences link,
-  including for users outside Europe who want to change a saved choice.
+Problem found in the published analytics.js:
+- An earlier country lookup was cached in localStorage for 24 hours.
+- Switching a VPN from the US to Switzerland did not invalidate the cached US classification.
+- Previous releases also saved a global consent choice that might not have
+  been collected from a visitor physically in a regulated region.
 
-No other files or Google Apps Script changes are required.
+Fix:
+- Fresh country lookup before GA4 is activated on EACH page load.
+- No region cache or stored country is used.
+- Uses a new versioned explicit consent preference for EEA/UK/Swiss visitors.
+- Preserves an earlier explicit opt-out; no prior automatic tracking is treated
+  as EEA consent.
+- EEA/UK/Swiss visitors without a valid new consent decision see the banner.
+- Confirmed US/non-regulated visitors see NO banner; GA4 loads unless opted out.
+- Unknown location: neither GA4 nor the consent popup is shown, fail closed.
+- Existing hidden/centered footer link remains only in regulated regions.
+- When analytics consent is withdrawn, the page reloads so the previously
+  loaded Google tag does not remain active on that page.
 
 TEST:
-- Open the homepage in a private window from a US connection; no popup or
-  Privacy & Analytics link should appear.
-- In GA4 Realtime, your visit should show up after processing and normal
-  browser/network conditions (unless an ad/tracker blocker prevents GA4).
-- On the /privacy/ page, Open analytics preferences remains available.
-- Test EU behavior with browser region simulation or a reliable EU network;
-  accept/decline should be shown only there.
+1. First upload the two files to your repo root and privacy folder.
+2. Connect your VPN to Switzerland, open a NEW Safari Private Browsing tab,
+   and go to https://arteziq.com/?ga_debug=1
+3. Verify the diagnostic says Detected country: CH and Region: consent-required.
+   The banner should be visible if you have no saved consent in that session.
+4. With VPN set to US, open a new Private Browsing tab and visit the same
+   debug link; diagnostic should report US/standard, GA4 loaded: yes, no banner.
+5. For normal visitors who do not include ?ga_debug=1, no diagnostic is shown.
 
-If Safari still shows the old button, GitHub Pages/browser may be caching
-analytics.js. Retry after a hard reload or clear cached site data.
+If Country.is reports a country other than Switzerland when using your Swiss
+VPN, the VPN/browser may route that request differently or its IP geolocation
+may be outdated. If it reports lookup_failed/timeout, GA4 stays blocked for safety.
