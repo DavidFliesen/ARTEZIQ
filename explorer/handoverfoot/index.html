@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <script src="https://arteziq.com/analytics.js"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex, follow">
@@ -63,6 +64,16 @@ footer{text-align:center;color:#89979c;padding:32px 20px 42px;font-size:14px}
  .field.full{grid-column:auto}
  .nda-box{padding:17px}
 }
+
+.status.error{background:#2a1114;border-color:#a94752;color:#ffd9dd}
+.status.success{background:#10261a;border-color:#3f7d55;color:#dff5e6}
+.status ul{margin:8px 0 0 20px;padding:0}
+.input-error{border-color:#ff7272!important;outline:2px solid rgba(255,114,114,.28)!important}
+.signature-wrap.input-error{border-color:#ff7272!important;box-shadow:0 0 0 2px rgba(255,114,114,.28)}
+.accept-row.input-error{outline:2px solid rgba(255,114,114,.45);background:#2a1618}
+.privacy-notice{margin:14px 0 16px;padding:14px 16px;border:1px solid rgba(220,165,46,.48);border-radius:12px;background:#101315;color:#d7dddf;line-height:1.5;font-size:14px}
+.privacy-notice a{color:#f1d36c;text-decoration:underline}
+
 </style>
 </head>
 <body>
@@ -80,9 +91,11 @@ footer{text-align:center;color:#89979c;padding:32px 20px 42px;font-size:14px}
     <p>Explorers help evaluate Hand Over Foot while it is still under development. You may be asked to use pre-release software in real-world situations, report bugs or confusing behavior, and provide practical feedback that helps improve the experience before release. Explorer participation is voluntary and unpaid.</p>
   </section>
 
-  <form id="explorerForm" novalidate>
+  <form id="explorerForm" novalidate
+    onsubmit="if(!window.ARTEZIQ_EXPLORER_READY){var s=document.getElementById('statusBox');if(s){s.innerHTML='<strong>The form could not initialize.</strong><br>Your information has not been submitted. Please reload this page and try again. If the problem continues, contact ARTEZIQ.';s.className='status error';s.style.display='block';s.scrollIntoView({behavior:'smooth',block:'center'});}return false;}">
     <input type="hidden" id="formStartedAt" name="formStartedAt">
-    <input type="hidden" id="formVersion" name="formVersion" value="2026-08-07-secure-1">
+    <input type="hidden" id="formVersion" name="formVersion" value="2026-10-18-ga4-privacy-1">
+    <input type="hidden" id="privacyNoticeVersion" name="privacyNoticeVersion" value="2026-10-18-v1">
 
     <section class="card">
       <h2>Contact Information</h2>
@@ -181,14 +194,32 @@ footer{text-align:center;color:#89979c;padding:32px 20px 42px;font-size:14px}
         <input type="checkbox" id="agree" required>
         <span>I have read the entire ARTEZIQ Tester Non-Disclosure Agreement, understand it, and agree to be bound by its terms.</span>
       </label>
+
+      <label class="accept-row">
+        <input type="checkbox" id="ageConfirmed" required>
+        <span>I confirm that I am at least 18 years old.</span>
+      </label>
+
     </section>
 
     <section class="card">
       <h2>Submit Explorer Request</h2>
       <p class="lead">This form includes anti-spam validation and server-side checks. After deployment, your signed NDA PDF can be emailed automatically to the address you provide.</p>
+      
+      <div class="privacy-notice" role="note">
+        <strong>Privacy notice:</strong> ARTEZIQ uses the information you provide to review and administer
+        your Explorer request, contact you, and create/administer the signed NDA. The signed NDA PDF and an
+        application summary are emailed to ARTEZIQ, and a copy of the signed NDA is emailed to you. The
+        current backend does not intentionally save the form or PDF to a separate database or Google Drive
+        folder. ARTEZIQ normally retains its Explorer application/NDA records for the Explorer relationship
+        plus 3 years unless a longer period is legally necessary. You may request access, correction, or
+        deletion by contacting <a href="mailto:arteziq.apps@gmail.com">arteziq.apps@gmail.com</a>.
+        See the <a href="/privacy/" target="_blank" rel="noopener">ARTEZIQ Privacy Policy</a>.
+      </div>
+
       <button class="submit" id="submitButton" type="submit">Submit Explorer Program Request</button>
-      <div class="status" id="statusBox"></div>
-      <p class="note">All required fields, the agreement checkbox, and the handwritten signature are required.</p>
+      <div class="status" id="statusBox" role="alert" aria-live="assertive" aria-atomic="true"></div>
+      <p class="note">All required fields, the NDA agreement checkbox, the 18+ confirmation, and the handwritten signature are required.</p>
     </section>
   </form>
 
@@ -241,7 +272,11 @@ fullName.addEventListener('input', () => {
     };
   }
   function start(e) {
-    e.preventDefault(); drawing = true;
+    e.preventDefault();
+    drawing = true;
+    if (canvas.setPointerCapture && e.pointerId !== undefined) {
+      try { canvas.setPointerCapture(e.pointerId); } catch (_) {}
+    }
     const p = pos(e); ctx.beginPath(); ctx.moveTo(p.x,p.y);
   }
   function move(e) {
@@ -255,6 +290,7 @@ fullName.addEventListener('input', () => {
   canvas.addEventListener('pointermove', move);
   canvas.addEventListener('pointerup', end);
   canvas.addEventListener('pointerleave', end);
+  canvas.addEventListener('pointercancel', end);
   document.getElementById('clearSignature').addEventListener('click', () => {
     ctx.clearRect(0,0,canvas.width,canvas.height); signed = false;
   });
@@ -365,18 +401,114 @@ fullName.addEventListener('input', () => {
     return { doc, agreementId, signedAt };
   }
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    statusBox.style.display = 'none';
-    statusBox.textContent = '';
 
-    if (!form.reportValidity()) return;
-    if (!signed) {
-      statusBox.textContent = 'Please sign the NDA before submitting.';
-      statusBox.style.display = 'block';
-      canvas.scrollIntoView({behavior:'smooth',block:'center'});
+  const fieldLabels = {
+    fullName: 'Full Name',
+    email: 'Email',
+    phone: 'Phone',
+    cityState: 'City / State',
+    contactMethod: 'Preferred Contact Method',
+    device: 'Primary Testing Device',
+    experience: 'Relevant experience / intended use',
+    ndaName: 'Tester Name',
+    ndaEmail: 'NDA Email',
+    ndaDate: 'NDA Date'
+  };
+
+  function clearValidationMarks() {
+    form.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
+    statusBox.className = 'status';
+    statusBox.style.display = 'none';
+    statusBox.innerHTML = '';
+  }
+
+  function markError(el) {
+    if (!el) return;
+    if (el === canvas) {
+      const wrap = canvas.closest('.signature-wrap');
+      if (wrap) wrap.classList.add('input-error');
       return;
     }
+    if (el.type === 'checkbox') {
+      const row = el.closest('.accept-row');
+      if (row) row.classList.add('input-error');
+      return;
+    }
+    el.classList.add('input-error');
+  }
+
+  function showErrors(items) {
+    const unique = [...new Set(items.filter(Boolean))];
+    statusBox.className = 'status error';
+    statusBox.innerHTML =
+      '<strong>Please correct the following before submitting:</strong>' +
+      '<ul>' + unique.map(item => '<li>' + item + '</li>').join('') + '</ul>' +
+      '<div style="margin-top:10px">Your entries are still on this page and have not been erased.</div>';
+    statusBox.style.display = 'block';
+    statusBox.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+
+  function validateClient() {
+    clearValidationMarks();
+    const errors = [];
+    const requiredIds = [
+      'fullName','email','phone','cityState','contactMethod','device',
+      'experience','ndaName','ndaEmail','ndaDate'
+    ];
+
+    requiredIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (!el.value.trim()) {
+        errors.push((fieldLabels[id] || id) + ' is required.');
+        markError(el);
+      } else if (!el.checkValidity()) {
+        errors.push((fieldLabels[id] || id) + ': ' + (el.validationMessage || 'Please enter a valid value.'));
+        markError(el);
+      }
+    });
+
+    const normalize = value => String(value || '').replace(/\s+/g, ' ').trim();
+    if (normalize(ndaName.value) && normalize(fullName.value) &&
+        normalize(ndaName.value) !== normalize(fullName.value)) {
+      errors.push('Tester Name must match Full Name.');
+      markError(ndaName);
+    }
+    if (ndaEmail.value.trim() && email.value.trim() &&
+        ndaEmail.value.trim().toLowerCase() !== email.value.trim().toLowerCase()) {
+      errors.push('NDA Email must match the contact Email.');
+      markError(ndaEmail);
+    }
+
+    const agree = document.getElementById('agree');
+    if (!agree.checked) {
+      errors.push('You must check the NDA agreement box.');
+      markError(agree);
+    }
+
+    const ageConfirmed = document.getElementById('ageConfirmed');
+    if (!ageConfirmed.checked) {
+      errors.push('You must confirm that you are at least 18 years old.');
+      markError(ageConfirmed);
+    }
+
+    if (!signed) {
+      errors.push('A handwritten signature is required in the signature box.');
+      markError(canvas);
+    }
+
+    if (errors.length) {
+      showErrors(errors);
+      return false;
+    }
+    return true;
+  }
+
+  window.ARTEZIQ_EXPLORER_READY = true;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!validateClient()) return;
 
     submitButton.disabled = true;
     submitButton.textContent = 'Preparing signed NDA...';
@@ -388,6 +520,7 @@ fullName.addEventListener('input', () => {
       data.ndaEmail = ndaEmail.value.trim();
       data.ndaDate = ndaDate.value;
       data.agreed = document.getElementById('agree').checked;
+      data.ageConfirmed = document.getElementById('ageConfirmed').checked;
       data.userAgent = navigator.userAgent || '';
       data.submissionToken = SUBMISSION_TOKEN;
 
@@ -414,6 +547,13 @@ fullName.addEventListener('input', () => {
         });
         const result = await response.json();
         if (!result.ok) throw new Error(result.error || 'Submission failed.');
+        
+        if (window.arteziqAnalytics) {
+          window.arteziqAnalytics.track('explorer_application_submitted', {
+            app_name: data.appBeingTested
+          });
+        }
+        statusBox.className = 'status success';
         statusBox.innerHTML = '<strong>Request submitted.</strong> A signed PDF copy of your NDA has been emailed to ' + data.email + '.';
       } else {
         pdfResult.doc.save(filename);
@@ -423,8 +563,19 @@ fullName.addEventListener('input', () => {
       statusBox.style.display = 'block';
       statusBox.scrollIntoView({behavior:'smooth',block:'center'});
     } catch (err) {
-      statusBox.textContent = 'Unable to complete the request: ' + err.message;
+      if (window.arteziqAnalytics) {
+        window.arteziqAnalytics.track('explorer_application_error', {
+          app_name: document.getElementById('appBeingTested').value,
+          error_type: 'submission_failed'
+        });
+      }
+      statusBox.className = 'status error';
+      statusBox.innerHTML =
+        '<strong>Unable to submit your Explorer request.</strong><br>' +
+        String(err.message || err) +
+        '<br><br><strong>Your entries are still on this page.</strong> Correct the problem and press Submit again.';
       statusBox.style.display = 'block';
+      statusBox.scrollIntoView({behavior:'smooth',block:'center'});
     } finally {
       submitButton.disabled = false;
       submitButton.textContent = 'Submit Explorer Program Request';
