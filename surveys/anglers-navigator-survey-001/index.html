@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script src="https://arteziq.com/analytics.js"></script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
 <meta name="theme-color" content="#04141a" />
@@ -105,6 +106,10 @@ textarea:focus, input:focus{outline:none;border-color:var(--sonar)}
 .arteziq-foot .az-word{font-weight:800;color:#eaf6f3;letter-spacing:2px}
 .arteziq-foot .az-gold{color:var(--amber)}
 .arteziq-foot .az-dot{color:var(--sonar-dim);margin:0 6px}
+
+.survey-privacy-note{margin:16px 0;padding:12px 14px;border:1px solid rgba(220,165,46,.45);border-radius:10px;color:#cfd5d8;background:#0d1113;font-size:12px;line-height:1.5}
+.survey-privacy-note a{color:#f1c75b}
+
 </style>
 </head>
 <body>
@@ -176,6 +181,11 @@ textarea:focus, input:focus{outline:none;border-color:var(--sonar)}
     </div>
 
     <div class="submitwrap">
+      <div class="survey-privacy-note" role="note">
+        Survey responses are used for ARTEZIQ product research. Do not include sensitive personal information
+        unless necessary. See the <a href="/privacy/" target="_blank" rel="noopener">Privacy Policy</a> for
+        collection, retention, and rights information.
+      </div>
       <button type="submit" class="btn" id="submitBtn">Submit Survey</button>
       <div class="statusmsg" id="statusMsg"></div>
     </div>
@@ -305,6 +315,11 @@ document.getElementById("surveyForm").addEventListener("submit", async (e)=>{
     });
     const result=await resp.json();
     if(!result.ok) throw new Error(result.error||"Submission failed.");
+    if(window.arteziqAnalytics){
+      window.arteziqAnalytics.track('survey_submitted',{
+        survey_id:SURVEY_ID
+      });
+    }
     document.getElementById("surveyForm").style.display="none";
     setStatus("✓ Thanks — your answers are in! A copy has been sent to your email.","ok");
   }catch(err){
