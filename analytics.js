@@ -5,7 +5,9 @@ GA4 Measurement ID: G-Z94JEHVXL8
 - EEA / UK / Switzerland: basic consent mode; GA4 does not load until accepted.
 - Other regions: GA4 loads automatically unless previously declined.
 - Country lookup uses api.country.is only to determine a two-letter country code.
-- Consent UI is shown only when country detection identifies EEA / UK / Switzerland.
+- Consent UI appears automatically only for detected EEA / UK / Switzerland visitors.
+- If country detection fails, neither GA4 nor the consent UI is loaded.
+- Footer text link is CSS-hidden outside the regulated regions.
 - Advertising storage, ad user data, and ad personalization stay denied everywhere.
 */
 (() => {
@@ -144,6 +146,7 @@ GA4 Measurement ID: G-Z94JEHVXL8
       .arteziq-consent-actions{display:flex;gap:10px;flex-wrap:wrap}.arteziq-consent-actions button{border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer;font-family:inherit;font-size:14px}
       #arteziq-accept-analytics{background:#dca52e;color:#090909;border:1px solid #dca52e} #arteziq-decline-analytics{background:transparent;color:#fff;border:1px solid #7d858a}
       #arteziq-privacy-control{display:block;width:fit-content;margin:0 auto 10px;padding:0;background:transparent;border:0;color:#d9bf71;font:13px Arial,Helvetica,sans-serif;line-height:1.3;text-align:center;text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+      #arteziq-privacy-control[hidden]{display:none!important}
       #arteziq-privacy-control:hover,#arteziq-privacy-control:focus-visible{color:#f1d36c}
       @media(max-width:520px){#arteziq-consent{left:10px;right:10px;bottom:10px;padding:15px}.arteziq-consent-actions button{flex:1 1 140px}}
     `;
@@ -166,6 +169,7 @@ GA4 Measurement ID: G-Z94JEHVXL8
     if (!control) {
       control=document.createElement('a');
       control.id='arteziq-privacy-control';
+      control.hidden=true;
       control.href='/privacy/';
       control.textContent='Privacy & Analytics';
       control.setAttribute('aria-label','Open privacy and analytics choices');
@@ -218,7 +222,10 @@ GA4 Measurement ID: G-Z94JEHVXL8
 
     // Outside EEA / UK / Switzerland: no consent UI; GA4 loads automatically.
     if(regionClass==='standard'){
-      loadGoogleAnalytics();
+      // Track normal U.S./non-regulated-region traffic without interrupting visitors.
+      // A visitor who explicitly declined earlier remains opted out.
+      if(readChoice()==='denied') denyAnalytics();
+      else loadGoogleAnalytics();
       return;
     }
 
@@ -242,13 +249,18 @@ GA4 Measurement ID: G-Z94JEHVXL8
       return;
     }
 
-    // If country cannot be determined, follow the requested no-popup behavior.
-    loadGoogleAnalytics();
+    // On an unreliable country lookup, do not show the consent interface and
+    // do not load GA4. This avoids improperly tracking an undetected EEA visitor.
+    // Only a confirmed 'standard' country is tracked automatically.
+    denyAnalytics();
   }
 
   window.arteziqAnalytics={
     track,
-    openPreferences(){if(regionClass==='consent-required')showConsentBanner();},
+    openPreferences(){
+      // Explicitly requested settings (e.g. from /privacy/) may be opened by anyone.
+      showConsentBanner();
+    },
     getConsent:readChoice,
     getRegionClass(){return regionClass;},
     measurementId:MEASUREMENT_ID

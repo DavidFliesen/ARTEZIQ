@@ -1,23 +1,38 @@
-ARTEZIQ EEA/UK/Switzerland-Only Analytics Consent Patch
+ARTEZIQ GA4 Consent Visibility Fix (2026-10-19)
 
-Upload these two files to the same locations in the GitHub repo:
-- /analytics.js
-- /privacy/index.html
+Upload these two replacements into DavidFliesen/ARTEZIQ:
+  analytics.js
+  privacy/index.html
 
-New behavior:
-- EEA / UK / Switzerland:
-  * Consent banner appears for visitors without a saved choice.
-  * GA4 remains blocked until analytics consent is granted.
-  * “Privacy & Analytics” appears as centered underlined text immediately above
-    “© 2026 ARTEZIQ. All Rights Reserved.”
-  * The text link reopens the consent panel.
-- Other detected countries:
-  * No consent popup.
-  * No Privacy & Analytics link.
-  * GA4 loads automatically.
-- If the country lookup cannot determine a country:
-  * No consent popup is shown.
-  * GA4 may load automatically.
-- Advertising-related Google consent remains denied everywhere.
+CONFIRMED CAUSE:
+The earlier CSS gave #arteziq-privacy-control a display:block declaration.
+This overrode the HTML hidden attribute, so the privacy link was visible
+even when the US/non-EEA code hid it. Clicking that link opened the consent
+panel. This did not by itself prove GA4 was failing to track US visitors.
 
-No other website files need to be replaced for this change.
+FIXED:
+- Explicit CSS rule #arteziq-privacy-control[hidden]{display:none!important}.
+- The link is created as hidden, and only revealed for detected EEA/UK/CH.
+- US/non-EEA: no consent banner or homepage/footer link, GA4 loads automatically
+  unless the visitor explicitly declined in the past.
+- Detected EEA/UK/CH: banner and centered text link above the copyright; GA4
+  does not load until the visitor accepts.
+- Unknown region or failed country lookup: no popup and no GA4. This
+  fail-closed behavior prioritizes EEA visitor privacy; it may cause some
+  sessions to be missed if the lookup cannot be completed.
+- The dedicated /privacy/ page contains an Open analytics preferences link,
+  including for users outside Europe who want to change a saved choice.
+
+No other files or Google Apps Script changes are required.
+
+TEST:
+- Open the homepage in a private window from a US connection; no popup or
+  Privacy & Analytics link should appear.
+- In GA4 Realtime, your visit should show up after processing and normal
+  browser/network conditions (unless an ad/tracker blocker prevents GA4).
+- On the /privacy/ page, Open analytics preferences remains available.
+- Test EU behavior with browser region simulation or a reliable EU network;
+  accept/decline should be shown only there.
+
+If Safari still shows the old button, GitHub Pages/browser may be caching
+analytics.js. Retry after a hard reload or clear cached site data.
