@@ -1,1 +1,37 @@
-
+{
+  "tab": "Analytics",
+  "date_presets": [
+    "today",
+    "7d",
+    "30d",
+    "90d",
+    "custom"
+  ],
+  "cards": [
+    "activeUsers",
+    "sessions",
+    "screenPageViews",
+    "explorerDirectoryViews",
+    "explorerSubmissions",
+    "explorerConversionRate"
+  ],
+  "tables": [
+    "campaigns",
+    "topPages",
+    "appFunnel"
+  ],
+  "filters": [
+    "dateRange",
+    "appName",
+    "source",
+    "medium",
+    "campaign",
+    "deviceCategory",
+    "country"
+  ],
+  "security": {
+    "server_side_ga4_api_only": true,
+    "pii": false,
+    "role_based_access": true
+  }
+}

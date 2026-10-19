@@ -1,0 +1,44 @@
+{
+  "measurement_id": "G-Z94JEHVXL8",
+  "events": {
+    "app_click": [
+      "app_name",
+      "destination_path",
+      "link_location"
+    ],
+    "explorer_click": [
+      "app_name",
+      "destination_path",
+      "link_location"
+    ],
+    "explorer_app_selected": [
+      "app_name",
+      "destination_path",
+      "link_location"
+    ],
+    "explorer_application_submitted": [
+      "app_name"
+    ],
+    "explorer_application_error": [
+      "app_name",
+      "error_type"
+    ],
+    "survey_open": [
+      "survey_id",
+      "destination_path"
+    ],
+    "survey_submitted": [
+      "survey_id"
+    ]
+  },
+  "pii_prohibited": [
+    "name",
+    "email",
+    "phone",
+    "city_state",
+    "signature",
+    "nda_text",
+    "experience_free_text",
+    "survey_free_text"
+  ]
+}
