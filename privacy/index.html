@@ -33,9 +33,11 @@
   <p class="meta"><strong>Effective:</strong> October 18, 2026 &nbsp; • &nbsp; <strong>Version:</strong> 2026-10-18-v1</p>
 
   <div class="notice">
-    <strong>Privacy-first analytics:</strong> ARTEZIQ does not load Google Analytics until you choose
-    “Allow analytics.” Declining analytics does not prevent you from using the site, applying to the
-    Explorer Program, or completing a survey.
+    <strong>Region-aware analytics:</strong> For visitors detected in the EEA, United Kingdom, or
+    Switzerland, ARTEZIQ does not load Google Analytics until the visitor chooses “Allow analytics.”
+    For visitors outside those regions, Google Analytics may load automatically unless the visitor has
+    previously declined analytics. Declining analytics does not prevent use of the site, the Explorer
+    Program, or surveys.
   </div>
 
   <h2>1. Who is responsible for your data</h2>
@@ -168,12 +170,23 @@
     address the concern.
   </p>
 
-  <h2>10. Analytics choice and local storage</h2>
+  <h2>10. Analytics choice, regional detection, and local storage</h2>
   <p>
-    ARTEZIQ uses a local browser preference solely to remember whether you allowed or declined analytics.
-    If you decline, the Google Analytics script is not loaded. If you allow analytics, GA4 may use
-    first-party analytics cookies or similar storage consistent with the consent choice. Advertising
-    storage, ad-user-data, and ad-personalization signals remain denied by ARTEZIQ’s site configuration.
+    ARTEZIQ uses a coarse country lookup to decide whether the stricter analytics-consent flow should be shown.
+    The site requests a country determination from <strong>Country.is (api.country.is)</strong>. Like any Internet
+    request, the visitor’s IP address is visible to that service while the request is processed. ARTEZIQ does
+    not store the returned IP address and stores only a short regional classification in the visitor’s browser.
+    Country.is states that its public service does not log requests.
+  </p>
+  <p>
+    For visitors detected in the EEA, United Kingdom, or Switzerland, Google Analytics does not load until the
+    visitor chooses <strong>Allow analytics</strong>. For visitors outside those regions, GA4 may load automatically
+    unless the visitor has previously declined analytics. If country detection fails or times out, ARTEZIQ uses
+    the conservative consent flow and does not load GA4 until permission is granted.
+  </p>
+  <p>
+    Visitors may use the <strong>Privacy &amp; Analytics</strong> control to change their analytics choice.
+    Advertising storage, ad-user-data, and ad-personalization signals remain denied by ARTEZIQ’s site configuration.
   </p>
 
   <h2>11. Children</h2>
