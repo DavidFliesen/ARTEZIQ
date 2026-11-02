@@ -226,3 +226,41 @@ footer {
     font-size: clamp(13px, 1vw, 16px);
   }
 }
+
+
+/* Clickable Explorer beta announcement; fits between app grid and platform row. */
+.explorer-beta-promo {
+  width: min(100%, 900px);
+  margin: -8px auto clamp(20px, 2.8vh, 32px);
+  padding: 13px 22px;
+  border: 1px solid rgba(220,165,46,.72);
+  border-radius: 14px;
+  background: linear-gradient(105deg,rgba(220,165,46,.11),rgba(255,255,255,.025),rgba(220,165,46,.08));
+  color: #f4f4f4;
+  text-decoration: none;
+  text-align: center;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  column-gap: 14px;
+  row-gap: 5px;
+  transition: border-color .2s ease, background .2s ease;
+}
+.explorer-beta-promo:hover, .explorer-beta-promo:focus-visible {
+  border-color: #f4ca62;
+  background: rgba(220,165,46,.15);
+  outline-offset: 3px;
+}
+.explorer-beta-kicker {
+  color: #eac165;
+  font-size: clamp(11px,.85vw,13px);
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+.explorer-beta-message { font-size: clamp(13px,1.07vw,17px); line-height: 1.35; }
+.explorer-beta-action { color: #f1ca72; font-weight: 700; font-size: clamp(12px,.92vw,15px); white-space: nowrap; }
+@media (max-width: 760px) {
+  .explorer-beta-promo { margin-top: -12px; padding: 15px 14px; }
+  .explorer-beta-kicker, .explorer-beta-message, .explorer-beta-action { width: 100%; }
+}
