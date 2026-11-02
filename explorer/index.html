@@ -121,6 +121,16 @@
       line-height: 1.42;
     }
 
+    .beta-note {
+      margin: 0 auto;
+      max-width: 1000px;
+      color: var(--muted);
+      text-align: center;
+      font-size: clamp(12px, .95vw, 16px);
+      line-height: 1.45;
+    }
+    .beta-note strong { color: var(--gold); }
+
     .apps {
       flex: 1 1 auto;
       display: grid;
@@ -245,6 +255,8 @@
         <h1 id="explorer-heading">Apps currently available for testing</h1>
         <p>Select an ARTEZIQ app below to learn more and to request to become an Explorer to help test and shape how the app is developed.</p>
       </div>
+
+      <p class="beta-note"><strong>NOTE:</strong> Four of the apps are in beta testing from November 1 – December 31, 2026. The golf app is accepting applications but is still being fine-tuned. Beta testing dates for Sherpa Caddie will be announced soon.</p>
 
       <section class="apps" aria-label="Apps currently available for testing">
         <a class="app-card app-anglers" href="/anglersnavigator/" aria-label="Explore Angler's Navigator">
