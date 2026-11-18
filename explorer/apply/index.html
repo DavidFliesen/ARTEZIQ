@@ -24,7 +24,7 @@ form.addEventListener('submit',async ev=>{
   const response=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(data),redirect:'follow'});
   const result=await response.json();if(!result.ok)throw Error(result.error||'Submission failed.');
   status.textContent='NDA submitted. Check your email for the signed PDF. Next, register or sign in to the Explorer portal to complete your account setup.';
-  const a=document.createElement('a');a.href='https://davidfliesen.github.io/feedback/explorer.html';a.textContent='Continue to Explorer account setup';status.append(' ',a);form.reset();
+  const a=document.createElement('a');a.href='https://davidfliesen.github.io/feedback/explorer.html?apps='+encodeURIComponent(apps.map(x=>({'Angler\'s Navigator':'anglers-navigator','Hand Over Foot':'hand-over-foot','Angler\'s Arrows':'anglers-arrows','Angler\'s Jigsaw':'anglers-jigsaw'})[x]).filter(Boolean).join(','));a.textContent='Continue to Explorer account setup';status.append(' ',a);form.reset();
  }catch(error){status.textContent='Submission not confirmed: '+error.message;}finally{button.disabled=false;}
 });
 </script></body></html>
