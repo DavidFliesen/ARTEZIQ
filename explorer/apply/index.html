@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <script src="https://arteziq.com/analytics.js"></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="description" content="Apply once for multiple ARTEZIQ Explorer beta applications and sign one complete NDA.">
@@ -144,7 +145,12 @@
     const names=selectedApps();
     ndaApps.textContent=names.length?names.join(', '):'Choose one or more apps above.';
   };
-  form.querySelectorAll('input[name="apps"]').forEach(el=>el.addEventListener('change',updateCoveredApps));
+  const preselected=new Set((new URLSearchParams(location.search).get('apps')||'').split(','));
+  form.querySelectorAll('input[name="apps"]').forEach(el=>{
+    el.checked=preselected.has(SLUGS[el.value]);
+    el.addEventListener('change',updateCoveredApps);
+  });
+  updateCoveredApps();
   fullName.addEventListener('input',()=>{if(!ndaName.dataset.edited)ndaName.value=fullName.value;document.getElementById('ndaTesterNamePreview').textContent=fullName.value||'the applicant named below'});
   ndaName.addEventListener('input',()=>{ndaName.dataset.edited='1'});
   const now=new Date();
@@ -154,11 +160,11 @@
     return {x:(e.clientX-box.left)*canvas.width/box.width,y:(e.clientY-box.top)*canvas.height/box.height};
   }
   canvas.addEventListener('pointerdown',e=>{
-    e.preventDefault();drawing=true;signed=true;
+    e.preventDefault();drawing=true;
     const p=point(e);ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineCap='round';ctx.lineJoin='round';ctx.lineWidth=3;ctx.strokeStyle='#17272d';
     try{canvas.setPointerCapture(e.pointerId)}catch(_){}
   });
-  canvas.addEventListener('pointermove',e=>{if(!drawing)return;e.preventDefault();const p=point(e);ctx.lineTo(p.x,p.y);ctx.stroke()});
+  canvas.addEventListener('pointermove',e=>{if(!drawing)return;e.preventDefault();const p=point(e);ctx.lineTo(p.x,p.y);ctx.stroke();signed=true});
   ['pointerup','pointercancel','lostpointercapture'].forEach(type=>canvas.addEventListener(type,()=>{drawing=false}));
   document.getElementById('clearSignature').addEventListener('click',()=>{ctx.clearRect(0,0,canvas.width,canvas.height);signed=false});
   function pdfFor(details){
@@ -186,6 +192,7 @@
     write('\nSignature: '+details.ndaName+'\nDate: '+details.ndaDate+'\nARTEZIQ representative: David Fliesen',10);
     if(y>height-125){doc.addPage();y=45}
     doc.addImage(canvas.toDataURL('image/png'),'PNG',margin,y,240,52);
+    y+=68;
     write('\n\nHandwritten signature captured above.',9);
     return doc.output('datauristring').split(',')[1];
   }
@@ -229,6 +236,7 @@
       const result=await response.json();
       if(result.ok!==true)throw Error(result.error||'Application was not accepted.');
       show('Your signed application was submitted. A PDF copy should arrive by email. Continue to your Explorer account setup below.',false);
+      if(window.arteziqAnalytics){apps.forEach(name=>window.arteziqAnalytics.track('explorer_application_submitted',{app_name:name}))}
       const link=document.createElement('a');
       const next=new URL(PORTAL);
       next.searchParams.set('apps',apps.map(name=>SLUGS[name]).join(','));
