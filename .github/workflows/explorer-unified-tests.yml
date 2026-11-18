@@ -18,4 +18,4 @@ jobs:
         with:
           node-version: '22'
       - name: Verify unified application HTML and JavaScript contract
-        run: node --test tests/explorer-unified.test.cjs
+        run: node --test tests/explorer-unified.test.cjs tests/explorer-unified-server.test.cjs
