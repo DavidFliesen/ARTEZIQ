@@ -1,30 +1,247 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ARTEZIQ Explorer Application</title><style>body{background:#0a0e10;color:#f4f4f4;font:16px system-ui;margin:0}main{max-width:760px;margin:auto;padding:28px}fieldset{border:1px solid #555;border-radius:12px;margin:18px 0;padding:16px}label{display:block;margin:12px 0}input:not([type=checkbox]),select,textarea{display:block;width:100%;box-sizing:border-box;padding:12px;background:#171d21;color:white;border:1px solid #888;border-radius:7px}button{background:#dca52e;color:#151515;padding:14px 24px;border:0;border-radius:8px;font-weight:bold}a{color:#e7b94d}p{line-height:1.5}.muted{color:#c7cdd1}</style><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script></head><body><main><a href="/explorer/">← Explorer Program</a><h1>Apply to become an Explorer</h1><p>Choose one or more apps. One application and one signed NDA will cover all your selected apps. Applications require founder approval; submitting does not grant app access.</p><form id="application"><fieldset><legend>Apps to test</legend><label><input type="checkbox" name="apps" value="Angler's Navigator"> Angler's Navigator</label><label><input type="checkbox" name="apps" value="Hand Over Foot"> Hand Over Foot</label><label><input type="checkbox" name="apps" value="Angler's Arrows"> Angler's Arrows</label><label><input type="checkbox" name="apps" value="Angler's Jigsaw"> Angler's Jigsaw</label><p class="muted">Sherpa Caddie is currently invitation-only closed alpha.</p></fieldset><fieldset><legend>Applicant details</legend><label>Full name<input name="fullName" required maxlength="120" autocomplete="name"></label><label>Email<input name="email" type="email" required maxlength="160" autocomplete="email"></label><label>Phone<input name="phone" type="tel" required maxlength="40" autocomplete="tel"></label><label>City and state<input name="cityState" required maxlength="120"></label><label>Preferred contact<select name="contactMethod"><option>Email</option><option>Text Message</option><option>Phone</option></select></label><label>Primary testing device<input name="device" required maxlength="120" placeholder="e.g., iPhone 13, iPad, Android"></label><label>Experience and intended use<textarea name="experience" required maxlength="3000" rows="4"></textarea></label></fieldset><fieldset><legend>Nondisclosure agreement</legend><p>By signing, I agree to keep nonpublic ARTEZIQ application features, materials, and information confidential; use them only for authorized testing; not distribute or publish confidential materials; and provide feedback voluntarily. This agreement covers all apps selected above. I understand this is a pre-release test, that no access is guaranteed, and that the agreement does not replace any separately supplied full legal terms.</p><p><strong>Important:</strong> Read the complete ARTEZIQ NDA before signing. This form is not a substitute for that agreement.</p><label><input type="checkbox" id="agreed" required> I have read and agree to the ARTEZIQ NDA for my selected apps.</label><label>Type your legal name as your electronic signature<input name="ndaName" required maxlength="120"></label><label>Date<input type="date" name="ndaDate" required></label></fieldset><label style="display:none">Leave blank<input name="company" tabindex="-1" autocomplete="off"></label><button type="submit" id="submit">Submit application</button><p id="status" role="status" aria-live="polite"></p></form></main><script>
-'use strict';
-const ENDPOINT = 'REPLACE_WITH_VERIFIED_EXISTING_APPS_SCRIPT_ENDPOINT';
-const form=document.getElementById('application'),status=document.getElementById('status');
-const started=Date.now();
-form.ndaDate.value=new Date().toLocaleDateString('en-CA');
-form.addEventListener('submit',async ev=>{
- ev.preventDefault();
- const apps=[...form.querySelectorAll('input[name=apps]:checked')].map(x=>x.value);
- if(!apps.length){status.textContent='Select at least one app.';return;}
- if(ENDPOINT.startsWith('REPLACE_')){status.textContent='Application service is not configured. Please try again later.';return;}
- const f=new FormData(form),name=String(f.get('fullName')).trim(),email=String(f.get('email')).trim();
- if(name!==String(f.get('ndaName')).trim()){status.textContent='Your signature must match your full name.';return;}
- const button=document.getElementById('submit');button.disabled=true;status.textContent='Preparing signed agreement…';
- try{
-  if(!window.jspdf)throw Error('PDF library could not load.');
-  const doc=new window.jspdf.jsPDF();const agreementId='AZ-'+Date.now();const signedAt=new Date().toISOString();
-  const lines=['ARTEZIQ Explorer Program — Signed NDA Acknowledgment','Agreement ID: '+agreementId,'Applicant: '+name,'Email: '+email,'Signed: '+signedAt,'Selected apps: '+apps.join(', '),'','I acknowledge acceptance of the ARTEZIQ Explorer NDA','for the selected applications.'];
-  let y=20;for(const line of lines){for(const segment of doc.splitTextToSize(line,175)){doc.text(segment,16,y);y+=8;}}
-  const b64=doc.output('datauristring').split(',')[1];
-  const data={appsBeingTested:apps,appBeingTested:apps[0],fullName:name,email,phone:f.get('phone'),cityState:f.get('cityState'),contactMethod:f.get('contactMethod'),device:f.get('device'),experience:f.get('experience'),ndaName:f.get('ndaName'),ndaEmail:email,ndaDate:f.get('ndaDate'),pdfBase64:b64,filename:'ARTEZIQ-NDA-'+agreementId+'.pdf',agreementId,signedAt,formVersion:'unified-1',userAgent:navigator.userAgent.slice(0,400),formStartedAt:started,submissionToken:'arteziq-explorer-v1',agreed:true,company:f.get('company')||''};
-  status.textContent='Sending application…';
-  const response=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(data),redirect:'follow'});
-  const result=await response.json();if(!result.ok)throw Error(result.error||'Submission failed.');
-  status.textContent='NDA submitted. Check your email for the signed PDF. Next, register or sign in to the Explorer portal to complete your account setup.';
-  const a=document.createElement('a');a.href='https://davidfliesen.github.io/feedback/explorer.html?apps='+encodeURIComponent(apps.map(x=>({'Angler\'s Navigator':'anglers-navigator','Hand Over Foot':'hand-over-foot','Angler\'s Arrows':'anglers-arrows','Angler\'s Jigsaw':'anglers-jigsaw'})[x]).filter(Boolean).join(','));a.textContent='Continue to Explorer account setup';status.append(' ',a);form.reset();
- }catch(error){status.textContent='Submission not confirmed: '+error.message;}finally{button.disabled=false;}
-});
-</script></body></html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="description" content="Apply once for multiple ARTEZIQ Explorer beta applications and sign one complete NDA.">
+  <title>ARTEZIQ | Unified Explorer Application</title>
+  <style>
+  :root{color-scheme:dark;--gold:#dca52e;--bg:#090d0f;--panel:#13191b;--line:#44535a;--muted:#c3ccd0}
+  *{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f4f7f7;font:16px system-ui,-apple-system,sans-serif}
+  main{width:min(800px,100%);margin:auto;padding:20px 22px 60px}a{color:#e8bd5b}p{line-height:1.55}
+  h1{font-size:clamp(28px,5vw,40px)}h2{font-size:23px}
+  fieldset{border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:18px 0;background:var(--panel)}
+  legend{font-size:18px;font-weight:750;padding:0 9px;color:var(--gold)}
+  label{display:block;margin:13px 0;color:#f2f4f4;font-weight:600}
+  input:not([type=checkbox]),select,textarea{width:100%;display:block;min-width:0;padding:12px;background:#090f11;color:#fff;border:1px solid #68747a;border-radius:8px;font:inherit;margin-top:7px}
+  input[type=checkbox]{width:19px;height:19px;flex:none;accent-color:var(--gold)}
+  .check{display:flex;align-items:flex-start;gap:10px;font-weight:500}
+  .hint,.privacy{color:var(--muted);font-size:14px}
+  .nda-box{background:#090f11;border:1px solid #39474e;border-radius:10px;max-height:460px;overflow:auto;padding:16px 18px;line-height:1.5}
+  .nda-box h2{font-size:20px}.nda-box h3{font-size:16px;color:var(--gold);margin-top:25px}.nda-box ul{padding-left:24px}
+  canvas{display:block;width:100%;height:170px;background:#eef2f2;border:2px solid #9faeb4;border-radius:9px;touch-action:none}
+  button{cursor:pointer;background:var(--gold);color:#151515;font:700 16px system-ui;padding:12px 18px;border:0;border-radius:9px}
+  button.secondary{background:#27363c;color:#fff;border:1px solid #5c7078;padding:8px 14px}
+  button:disabled{opacity:.6;cursor:wait}.status{margin-top:15px;line-height:1.6}
+  .status.error{color:#ffbec4}.status.success{color:#bbf8e2}
+  .privacy{border-left:3px solid var(--gold);padding-left:12px}
+  @media(max-width:530px){main{padding:14px 14px 45px}fieldset{padding:13px}canvas{height:140px}}
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+</head>
+<body>
+<main>
+  <a href="/explorer/">← Explorer Program</a>
+  <h1>Apply to become an Explorer</h1>
+  <p>Choose one or more apps. Complete one application and sign one full Non-Disclosure Agreement covering every app you select. Enrollment remains subject to ARTEZIQ approval.</p>
+  <form id="application">
+    <fieldset>
+      <legend>1. Choose the apps to test</legend>
+      <label class="check"><input type="checkbox" name="apps" value="Angler's Navigator"> Angler's Navigator</label>
+      <label class="check"><input type="checkbox" name="apps" value="Hand Over Foot"> Hand Over Foot</label>
+      <label class="check"><input type="checkbox" name="apps" value="Angler's Arrows"> Angler's Arrows</label>
+      <label class="check"><input type="checkbox" name="apps" value="Angler's Jigsaw"> Angler's Jigsaw</label>
+      <p class="hint">Sherpa Caddie is currently invitation-only closed alpha.</p>
+    </fieldset>
+    <fieldset>
+      <legend>2. Applicant information</legend>
+      <label>Full legal name<input name="fullName" id="fullName" required maxlength="120" autocomplete="name"></label>
+      <label>Email<input name="email" type="email" id="email" required maxlength="160" autocomplete="email"></label>
+      <label>Phone<input name="phone" type="tel" required maxlength="40" autocomplete="tel"></label>
+      <label>City and state<input name="cityState" required maxlength="120"></label>
+      <label>Preferred contact method<select name="contactMethod"><option>Email</option><option>Text Message</option><option>Phone</option></select></label>
+      <label>Primary testing device<input name="device" required maxlength="120" placeholder="e.g., iPhone 13, iPad, Android"></label>
+      <label>Experience and intended use<textarea name="experience" required maxlength="3000" rows="4"></textarea></label>
+    </fieldset>
+    <fieldset>
+      <legend>3. Read and sign the NDA</legend>
+      <p class="hint">Review the complete terms below. The PDF submitted with your application includes all of these terms and your signature.</p>
+      <div class="nda-box" id="ndaTerms" aria-label="Full ARTEZIQ Tester NDA">
+
+<h2>ARTEZIQ TESTER NON-DISCLOSURE AGREEMENT</h2>
+<p><strong>This Non-Disclosure Agreement ("Agreement") is entered into as of the date of acceptance below, by and between:</strong></p>
+<p><strong>ARTEZIQ</strong> ("Disclosing Party"), and <strong id="ndaTesterNamePreview">the applicant named below</strong> ("Tester" or "Receiving Party"), an individual participating in the pre-release testing of <strong>the Selected Applications</strong>.</p>
+<p><strong>Selected Applications covered by this Agreement:</strong> <span id="ndaSelectedApps">Choose one or more apps above.</span></p>
+<h3>1. Purpose</h3>
+<p>ARTEZIQ wishes to share access to the pre-release software applications named above (the "Selected Applications"), including their progressive web app and/or mobile (iOS/Android) versions (collectively, the "Software"), so that the Tester may test the Software and provide feedback. For purposes of this Agreement, "Software" collectively means <strong>the Selected Applications</strong> and their associated pre-release versions, features, materials, and testing information. This Agreement governs the Tester's access to and use of that Software and any related information.</p>
+<h3>2. Definition of Confidential Information</h3>
+<p>"Confidential Information" means any non-public information disclosed by ARTEZIQ to the Tester, whether in written, oral, visual, electronic, or any other form, including but not limited to:</p>
+<ul>
+  <li>The Software itself, its existence, features, functionality, user interface, and design;</li>
+  <li>Access URLs, credentials, invitation links, and any means of accessing the Software;</li>
+  <li>Screens, screenshots, recordings, source code, data structures, and documentation;</li>
+  <li>Product plans, roadmaps, unreleased features, and business information; and</li>
+  <li>Any feedback, bug reports, or communications exchanged during testing.</li>
+</ul>
+<h3>3. Exclusions</h3>
+<p>Confidential Information does not include information that: (a) is or becomes publicly available through no fault of the Tester; (b) was rightfully known to the Tester before disclosure; (c) is rightfully received from a third party without a duty of confidentiality; or (d) is required to be disclosed by law, provided the Tester gives ARTEZIQ prompt written notice where legally permitted.</p>
+<h3>4. Tester's Obligations</h3>
+<p>The Tester agrees to:</p>
+<ul>
+  <li>Keep all Confidential Information strictly confidential and not disclose it to any third party;</li>
+  <li>Not share, forward, or publish any access URL, link, or credential provided by ARTEZIQ;</li>
+  <li>Not capture, reproduce, screenshot, screen-record, or copy the Software or its content except as expressly requested by ARTEZIQ for testing purposes;</li>
+  <li>Not publicly discuss, review, post about, or reveal the existence of the Software on social media, forums, app stores, or elsewhere;</li>
+  <li>Use the Software solely for the purpose of testing and providing feedback to ARTEZIQ; and</li>
+  <li>Take reasonable care to protect Confidential Information from unauthorized access.</li>
+</ul>
+<h3>5. No License or Ownership</h3>
+<p>Nothing in this Agreement grants the Tester any right, title, license, or ownership interest in the Software or Confidential Information. All intellectual property remains the exclusive property of ARTEZIQ. Access is granted only for the limited testing purpose and may be revoked by ARTEZIQ at any time, for any reason, without notice.</p>
+<h3>6. Feedback</h3>
+<p>Any feedback, suggestions, ideas, bug reports, or improvements the Tester provides regarding the Software ("Feedback") shall become the sole property of ARTEZIQ. ARTEZIQ may use Feedback for any purpose without restriction, compensation, or attribution to the Tester.</p>
+<h3>7. Return or Destruction of Access</h3>
+<p>Upon the conclusion of testing, or upon ARTEZIQ's request, the Tester shall immediately cease all use of the Software, delete any copies of Confidential Information in their possession, and stop using any access URLs or credentials provided. ARTEZIQ may disable access at any time.</p>
+<h3>8. No Warranty</h3>
+<p>The Software is provided <strong>"AS IS"</strong> and <strong>"AS AVAILABLE"</strong> for testing purposes only. ARTEZIQ makes no warranties of any kind, express or implied, including fitness for a particular purpose, and shall not be liable for any damages arising from the Tester's use of the Software.</p>
+<h3>9. No Obligation</h3>
+<p>Nothing in this Agreement obligates ARTEZIQ to proceed with any product, disclose any particular information, or enter into any further relationship (employment, partnership, or otherwise) with the Tester. Participation as a Tester is voluntary and unpaid unless otherwise agreed in writing.</p>
+<h3>10. Term</h3>
+<p>This Agreement takes effect on the date of acceptance and remains in effect during the testing period and for <strong>two (2) years</strong> thereafter, except that obligations regarding trade secrets continue for as long as the information remains a trade secret under applicable law.</p>
+<h3>11. Remedies</h3>
+<p>The Tester acknowledges that any breach of this Agreement may cause ARTEZIQ irreparable harm for which monetary damages would be inadequate. ARTEZIQ is therefore entitled to seek injunctive relief in addition to any other remedies available at law or in equity.</p>
+<h3>12. Governing Law</h3>
+<p>This Agreement shall be governed by and construed in accordance with the laws of the State of South Carolina, without regard to its conflict-of-law principles.</p>
+<h3>13. Entire Agreement</h3>
+<p>This Agreement constitutes the entire understanding between the parties regarding its subject matter and supersedes all prior discussions. Any amendment must be in writing and agreed to by both parties.</p>
+<h3>Acceptance</h3>
+<p>By signing below (or by clicking "I Agree" in the online version), the Tester acknowledges they have read, understood, and agree to be bound by this Agreement for testing each of the <strong>Selected Applications</strong>.</p>
+
+      </div>
+      <label>Legal name for signature<input name="ndaName" id="ndaName" required maxlength="120"></label>
+      <label>NDA date<input name="ndaDate" id="ndaDate" type="date" required></label>
+      <label>Draw your signature in the box below</label>
+      <canvas id="signatureCanvas" width="1000" height="210" aria-label="Handwritten signature pad"></canvas>
+      <button type="button" class="secondary" id="clearSignature">Clear signature</button>
+      <label class="check"><input type="checkbox" id="agreed" required> I have read the complete NDA and agree to its terms.</label>
+      <label class="check"><input type="checkbox" id="ageConfirmed" required> I confirm that I am at least 18 years old.</label>
+    </fieldset>
+    <p class="privacy"><strong>Privacy notice:</strong> ARTEZIQ uses your details to review your Explorer application, administer the signed NDA and contact you. Application details and the signed PDF are emailed to ARTEZIQ, with a PDF copy sent to you. They are not intentionally saved to a separate database or Google Drive folder by the current email-based backend. Explorer application/NDA records are normally kept for the Explorer relationship plus three years unless law requires longer. For access, correction or deletion requests, contact <a href="mailto:arteziq.apps@gmail.com">arteziq.apps@gmail.com</a>. Read the <a href="/privacy/" target="_blank" rel="noopener">Privacy Policy</a>.</p>
+    <label style="display:none">Leave blank<input name="company" tabindex="-1" autocomplete="off"></label>
+    <button type="submit" id="submit">Submit signed application</button>
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+  </form>
+</main>
+<script>
+(function(){
+  'use strict';
+  // Enter only the verified unified Apps Script /exec deployment URL; never reuse
+  // an older single-app endpoint just because it accepts POST.
+  const ENDPOINT='REPLACE_WITH_VERIFIED_UNIFIED_APPS_SCRIPT_ENDPOINT';
+  const SUBMISSION_TOKEN='arteziq-explorer-v1';
+  const PORTAL='https://davidfliesen.github.io/feedback/explorer.html';
+  const SLUGS={"Angler's Navigator":'anglers-navigator','Hand Over Foot':'hand-over-foot',"Angler's Arrows":'anglers-arrows',"Angler's Jigsaw":'anglers-jigsaw'};
+  const form=document.getElementById('application');
+  const status=document.getElementById('status');
+  const submit=document.getElementById('submit');
+  const canvas=document.getElementById('signatureCanvas');
+  const ctx=canvas.getContext('2d');
+  const started=Date.now();
+  let drawing=false, signed=false;
+  const fullName=document.getElementById('fullName'), ndaName=document.getElementById('ndaName');
+  const ndaApps=document.getElementById('ndaSelectedApps');
+  const selectedApps=()=>Array.from(form.querySelectorAll('input[name="apps"]:checked'),x=>x.value);
+  const updateCoveredApps=()=>{
+    const names=selectedApps();
+    ndaApps.textContent=names.length?names.join(', '):'Choose one or more apps above.';
+  };
+  form.querySelectorAll('input[name="apps"]').forEach(el=>el.addEventListener('change',updateCoveredApps));
+  fullName.addEventListener('input',()=>{if(!ndaName.dataset.edited)ndaName.value=fullName.value;document.getElementById('ndaTesterNamePreview').textContent=fullName.value||'the applicant named below'});
+  ndaName.addEventListener('input',()=>{ndaName.dataset.edited='1'});
+  const now=new Date();
+  document.getElementById('ndaDate').value=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+  function point(e){
+    const box=canvas.getBoundingClientRect();
+    return {x:(e.clientX-box.left)*canvas.width/box.width,y:(e.clientY-box.top)*canvas.height/box.height};
+  }
+  canvas.addEventListener('pointerdown',e=>{
+    e.preventDefault();drawing=true;signed=true;
+    const p=point(e);ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineCap='round';ctx.lineJoin='round';ctx.lineWidth=3;ctx.strokeStyle='#17272d';
+    try{canvas.setPointerCapture(e.pointerId)}catch(_){}
+  });
+  canvas.addEventListener('pointermove',e=>{if(!drawing)return;e.preventDefault();const p=point(e);ctx.lineTo(p.x,p.y);ctx.stroke()});
+  ['pointerup','pointercancel','lostpointercapture'].forEach(type=>canvas.addEventListener(type,()=>{drawing=false}));
+  document.getElementById('clearSignature').addEventListener('click',()=>{ctx.clearRect(0,0,canvas.width,canvas.height);signed=false});
+  function pdfFor(details){
+    if(!window.jspdf||!window.jspdf.jsPDF)throw Error('The PDF library did not load. Please reload before submitting.');
+    const doc=new window.jspdf.jsPDF({unit:'pt',format:'a4'});
+    let y=48;
+    const margin=45,width=505,height=842;
+    function write(str,fontSize=10){
+      const safe=String(str).replace(/[\u2018\u2019]/g,"'").replace(/[\u201c\u201d]/g,'"').replace(/\u2014/g,'-').replace(/\u2022/g,'-');
+      doc.setFontSize(fontSize);doc.setFont('helvetica','normal');
+      for(const paragraph of safe.split(/\r?\n/)){
+        const lines=doc.splitTextToSize(paragraph||' ',width);
+        for(const line of lines){
+          if(y>height-65){doc.addPage();y=45}
+          doc.text(line,margin,y);y+=fontSize*1.42;
+        }
+        y+=4;
+      }
+    }
+    write('ARTEZIQ EXPLORER PROGRAM - SIGNED NDA',15);
+    write('Agreement ID: '+details.agreementId+'\nApplicant: '+details.fullName+'\nEmail: '+details.email+'\nSelected apps: '+details.appsBeingTested.join(', ')+'\nSigned at: '+details.signedAt,10);
+    write('\nCOMPLETE NDA TERMS\n',12);
+    write(document.getElementById('ndaTerms').innerText,9);
+    if(y>height-130){doc.addPage();y=45}
+    write('\nSignature: '+details.ndaName+'\nDate: '+details.ndaDate+'\nARTEZIQ representative: David Fliesen',10);
+    if(y>height-125){doc.addPage();y=45}
+    doc.addImage(canvas.toDataURL('image/png'),'PNG',margin,y,240,52);
+    write('\n\nHandwritten signature captured above.',9);
+    return doc.output('datauristring').split(',')[1];
+  }
+  function show(message,isError){
+    status.className='status '+(isError?'error':'success');
+    status.textContent=message;
+  }
+  form.addEventListener('submit',async e=>{
+    e.preventDefault();
+    const apps=selectedApps();
+    if(!apps.length){show('Select at least one app to test.',true);return}
+    if(!form.reportValidity())return;
+    const fields=new FormData(form);
+    const fullNameText=String(fields.get('fullName')||'').trim();
+    const email=String(fields.get('email')||'').trim();
+    const signedName=String(fields.get('ndaName')||'').trim();
+    if(!signed||!signedName){show('Draw your signature and enter your legal name.',true);return}
+    if(fullNameText.replace(/\s+/g,' ')!==signedName.replace(/\s+/g,' ')){show('Signature name must match your full legal name.',true);return}
+    if(!document.getElementById('agreed').checked||!document.getElementById('ageConfirmed').checked){show('Read and accept the full NDA and confirm that you are at least 18.',true);return}
+    if(ENDPOINT.startsWith('REPLACE_')){show('Application service is not connected yet. No information has been sent.',true);return}
+    if(fields.get('company')){show('Application could not be accepted.',true);return}
+    submit.disabled=true;submit.textContent='Preparing and sending signed NDA…';
+    try{
+      const rand=window.crypto&&window.crypto.getRandomValues?Array.from(window.crypto.getRandomValues(new Uint8Array(6)),n=>n.toString(16).padStart(2,'0')).join(''):String(Date.now());
+      const agreementId='AZ-'+Date.now()+'-'+rand;
+      const signedAt=new Date().toISOString();
+      const data={
+        appBeingTested:apps[0],appsBeingTested:apps,
+        fullName:fullNameText,email,phone:fields.get('phone'),
+        cityState:fields.get('cityState'),contactMethod:fields.get('contactMethod'),
+        device:fields.get('device'),experience:fields.get('experience'),
+        ndaName:signedName,ndaEmail:email,ndaDate:fields.get('ndaDate'),
+        agreed:true,ageConfirmed:true,agreementId,signedAt,
+        formStartedAt:started,formVersion:'unified-2',privacyNoticeVersion:'2026-10-18-v1',
+        userAgent:navigator.userAgent.slice(0,400),submissionToken:SUBMISSION_TOKEN,
+        company:'',filename:'ARTEZIQ-Explorer-NDA-'+agreementId+'.pdf'
+      };
+      data.pdfBase64=pdfFor(data);
+      const response=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(data),redirect:'follow'});
+      if(!response.ok)throw Error('Application service returned HTTP '+response.status);
+      const result=await response.json();
+      if(result.ok!==true)throw Error(result.error||'Application was not accepted.');
+      show('Your signed application was submitted. A PDF copy should arrive by email. Continue to your Explorer account setup below.',false);
+      const link=document.createElement('a');
+      const next=new URL(PORTAL);
+      next.searchParams.set('apps',apps.map(name=>SLUGS[name]).join(','));
+      link.href=next.href;link.textContent='Continue to Explorer account setup';link.style.display='block';link.style.marginTop='14px';
+      status.appendChild(link);
+      submit.textContent='Application submitted';
+      submit.disabled=true;
+    }catch(error){
+      show('Submission was not confirmed: '+error.message+'. Your entries are still here. Check with ARTEZIQ before resending if you received an email.',true);
+      submit.textContent='Submit signed application';
+      submit.disabled=false;
+    }
+  });
+})();
+</script>
+</body></html>
