@@ -14,6 +14,20 @@ ARTEZIQ is a Disabled Veteran Owned Small Business focused on AI-powered apps an
 
 ---
 
+## November 18, 2026 — Unified Explorer application (development only)
+
+**Branch:** `explorer-unified-onboarding-20261118`; **not merged or published**.
+
+- The four open-beta app cards on `/explorer/` now lead to `/explorer/apply/?apps=<slug>`, where the chosen beta app is preselected and the applicant may choose additional apps. The existing individual application pages are retained for existing links; Sherpa Caddie's independent closed-alpha page is unchanged.
+- The new shared application contains the 13 sections and acceptance of the existing Tester NDA, adapted from the Angler's Navigator NDA for multiple Selected Applications; plus a handwritten signature pad, age confirmation, privacy notice, one complete signed PDF, and validation of all required applicant fields.
+- The site retains consent-based `/analytics.js` integration without sending names, emails, free-text responses, or signatures as analytics event fields.
+- A successful submission passes the selected app slugs to the Feedback Explorer Portal, where new accounts preserve them through Supabase Auth confirmation and users may explicitly request Founder approval of multiple apps with one click. The portal does not treat URL parameters or user metadata as authorization.
+- **Release blocker:** the `ENDPOINT` value in `explorer/apply/index.html` deliberately remains `REPLACE_WITH_VERIFIED_UNIFIED_APPS_SCRIPT_ENDPOINT`. The existing GitHub Apps Script is single-app aware; the pending Apps Script deployment must accept and report all `appsBeingTested`, provide full NDA PDFs to the correct recipients, and be tested before this page is published. The legal NDA adaptation must also be reviewed.
+- **Tests:** development branch's `.github/workflows/explorer-unified-tests.yml` validates syntax, NDA sections, form contract, four app links, Sherpa isolation, and analytics boundaries. These are static tests, not a live submission.
+- See `explorer/apply/INTEGRATION.md` for field contract, external dependencies and deployment checks. No emails sent, accounts touched, or production files deployed by this development work.
+
+---
+
 ## Current ARTEZIQ Apps
 
 ### Angler's Navigator
@@ -149,7 +163,7 @@ Explorer applications are currently available for:
 - Angler's Arrows
 - Angler's Jigsaw
 
-Each app has its own Explorer application page so the application and NDA are specific to the product being tested.
+The published website currently retains individual app-specific Explorer application pages. The development branch introduces a unified NDA/application for the four open-beta apps while preserving those existing routes.
 
 ### Explorer NDA
 
@@ -576,6 +590,9 @@ For multi-file development updates, changed-file packages should contain only th
 ---
 
 ## Current Explorer Routes
+
+**Proposed unified route on the development branch:** `https://arteziq.com/explorer/apply/` (not yet live). The existing routes below remain available.
+
 
 ```text
 https://arteziq.com/explorer/anglersnavigator/
