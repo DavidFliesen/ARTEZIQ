@@ -70,3 +70,18 @@ jobs:
         run: npm install --no-save --ignore-scripts --no-package-lock playwright-core@1.56.1 jspdf@2.5.1
       - name: Test complete mobile NDA form with mocked delivery
         run: node scripts/test-unified-form-chromium.mjs
+
+  preview-bundle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assemble isolated development preview files
+        run: |
+          mkdir -p preview
+          cp explorer/apply/index.html preview/index.html
+          cp explorer/apply/QA-TESTING.md preview/QA-TESTING.md
+      - uses: actions/upload-artifact@v4
+        with:
+          name: unified-explorer-preview
+          path: preview/
+          retention-days: 7
