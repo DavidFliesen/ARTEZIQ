@@ -10,6 +10,14 @@ The development form preserves the full 13-section NDA and handwritten signature
 
 This handoff does not create a Supabase account, approve an app, or add anyone to Cloudflare Access. Those actions remain separate and protected by the server-side authorization flow.
 
+## Deployment and verification update — November 18, 2026
+
+- **New standalone web app deployed by the Founder:** `https://script.google.com/macros/s/AKfycbykzFI9zXYY_xqVyicbcKPGaTdP-E7loiFU9u9DzsCHfY5Wdc0Oe6ZucTu6aBv8Ligo/exec`.
+- The development form's `ENDPOINT` is set to that address. The old single-app code and deployed endpoint have not been changed.
+- The development-branch GitHub Actions job `deployed-endpoint-health` performed **GET only** and verified HTTP **200** with `{"ok":true,"service":"arteziq-explorer-unified","version":"1"}`. Google redirected the ContentService response to `script.googleusercontent.com`, as expected. See <https://github.com/DavidFliesen/ARTEZIQ/actions/runs/44426326436>.
+- The unit/static tests pass independently. **GET health verification does not prove** that the Safari/Chrome page can submit a POST, read redirected JSON cross-origin, send both emails or display the success handoff. **No live POST test has been performed.**
+- Do not merge or publish the revised application until its multi-app legal terms have been reviewed and a controlled browser submission, email/PDF receipt, Founder approval, and protected app launch have been checked.
+
 ## Google Apps Script contract
 
 The new unified web app deployment must accept `POST` text/plain JSON and reply with JSON such as `{"ok":true}` on success. The posted fields are:
@@ -44,7 +52,7 @@ Automated code test: `tests/explorer-unified-server.test.cjs`, included in `.git
 2. Open `Code.gs`, remove the sample `myFunction` and paste the *entire* contents of [`explorer/unified-apps-script.gs`](../unified-apps-script.gs). Save.
 3. Choose **Deploy → New deployment → Select type (gear) → Web app**. Description: `Unified Explorer v1`; **Execute as: Me**; **Who has access: Anyone**. Authorize the requested Apps Script/Gmail permissions while signed into the intended ARTEZIQ sender account.
 4. Copy the **Web app URL ending in `/exec`**. Visit that URL in a browser, including a private window if possible. Its harmless health check must report `"service":"arteziq-explorer-unified"` and `"version":"1"`. This GET does **not** send mail.
-5. Keep this URL out of the production application until the adaptation of the NDA is approved and end-to-end submission tests pass. Set `ENDPOINT` in the development-branch `explorer/apply/index.html` only after validating the new URL.
+5. **Done in development:** the new URL is configured in `explorer/apply/index.html` after a successful read-only health check. Keep the unified site unpublished until the NDA adaptation is reviewed and end-to-end tests pass.
 6. Test a single disposable NDA submission with an email account under your control, and inspect **both email copies**, their complete PDF, the agreement ID, and the selected apps. Do not use actual beta tester information for this first test.
 7. Test from both Safari on iPad/iPhone and a desktop browser. Apps Script ContentService redirects responses to `script.googleusercontent.com`, which can affect cross-origin response handling. A successful GitHub test or GET health check does **not** establish that browser `fetch` can read the POST response on these devices.
 8. Only when the signed application reaches the Feedback Portal, the Founder can approve the correct enrollments, and protected launches work, merge and deploy the two development branches.
@@ -54,8 +62,8 @@ Automated code test: `tests/explorer-unified-server.test.cjs`, included in `.git
 ## Release sequence (none performed yet)
 
 1. Review the adapted NDA text against the current approved ARTEZIQ NDA and verify the four-app allow-list.
-2. Publish the separate `explorer/unified-apps-script.gs` Web App after reviewing its 34 automated tests and verifying the sender account using the intended ARTEZIQ account. Capture the new version's `/exec` URL.
-3. Set `ENDPOINT` in `explorer/apply/index.html` to that verified URL on the development branch. Until then the page intentionally refuses to submit.
+2. **Done:** the Founder deployed the standalone `explorer/unified-apps-script.gs` Web App; GitHub Actions confirmed HTTP 200 and the expected service/version on GET using the intended ARTEZIQ account. Capture the new version's `/exec` URL.
+3. **Done in development:** `ENDPOINT` in `explorer/apply/index.html` uses the new `/exec` URL. No production website deployment was performed.
 4. Run an actual disposable-account application and check: emailed PDF has all 13 NDA sections, checked apps, dates and signature; both intended recipients receive it exactly once; invalid/incomplete submissions do not send.
 5. Follow the confirmation link into `https://davidfliesen.github.io/feedback/explorer.html?apps=...`; create/sign in to a **disposable Explorer** account and request selected apps in one click. Confirm each appears as Pending for Founder review, no automatic approval.
 6. Confirm Founder review/approval, app launch, Ladybug submission, and that existing beta users and feedback remain intact. For protected apps, grant Cloudflare Access separately before claiming a one-step login experience.
