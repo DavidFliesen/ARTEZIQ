@@ -6,7 +6,7 @@ try {
   response = await fetch(endpoint, {
     method: 'GET',
     redirect: 'follow',
-    headers: { Accept: 'application/json' },
+    headers: { Accept: 'application/json', Origin: 'https://arteziq.com' },
     signal: AbortSignal.timeout(20000)
   });
 } catch (error) {
@@ -28,5 +28,11 @@ catch {
 if (data.ok !== true || data.service !== 'arteziq-explorer-unified' || String(data.version) !== '1') {
   console.error('UNIFIED_ENDPOINT_UNEXPECTED_SERVICE:', JSON.stringify({ ok: data.ok, service: data.service, version: data.version }));
   process.exit(1);
+}
+const cors = response.headers.get('access-control-allow-origin');
+if (cors === '*' || cors === 'https://arteziq.com') {
+  console.log('UNIFIED_ENDPOINT_CORS_HEADER:', cors);
+} else {
+  console.warn('UNIFIED_ENDPOINT_CORS_UNCONFIRMED: no matching Access-Control-Allow-Origin header on redirected GET; browser fetch may be blocked.');
 }
 console.log('UNIFIED_ENDPOINT_HEALTH_OK:', JSON.stringify({ service: data.service, version: data.version, status: response.status, finalHost: new URL(response.url).hostname }));
