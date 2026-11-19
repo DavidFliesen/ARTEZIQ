@@ -15,12 +15,14 @@ test('new NDA includes all original numbered sections plus acceptance',()=>{
   assert.match(application,/id="agreed"/);
 });
 
-test('application script has valid JavaScript syntax and keeps the endpoint closed',()=>{
+test('application script has valid JavaScript syntax and uses the new unified endpoint',()=>{
   const scripts=[...application.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)]
     .map(x=>x[1]).filter(x=>x.trim());
   assert.equal(scripts.length,1,'Expected one self-contained application script');
   assert.doesNotThrow(()=>new vm.Script(scripts[0],{filename:'apply-inline.js'}));
-  assert.match(application,/REPLACE_WITH_VERIFIED_UNIFIED_APPS_SCRIPT_ENDPOINT/);
+  const expected = 'https://script.google.com/macros/s/AKfycbykzFI9zXYY_xqVyicbcKPGaTdP-E7loiFU9u9DzsCHfY5Wdc0Oe6ZucTu6aBv8Ligo/exec';
+  assert.ok(application.includes("const ENDPOINT='"+expected+"'"), 'The new endpoint must be configured exactly');
+  assert.doesNotMatch(application,/REPLACE_WITH_VERIFIED_UNIFIED_APPS_SCRIPT_ENDPOINT/);
   assert.match(application,/ENDPOINT\.startsWith\('REPLACE_'\)/);
 });
 
