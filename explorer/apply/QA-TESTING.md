@@ -11,9 +11,10 @@
 - Full mobile-size Chromium form with **intercepted POST**: signed PDF successfully generated, two apps preserved, unsigned submit blocked, one mock submission, correct Feedback Portal continuation link. **No real application or email sent.**
 - 34 static/unit/server-behavior tests pass.
 
-Evidence: <https://github.com/DavidFliesen/ARTEZIQ/actions/runs/44428650282>
+- Playwright WebKit passed the mobile form test with submission intercepted. An iPad Safari submission and real email delivery still need live verification.
+- The Feedback Portal's Chrome test covered existing-account sign-in, signup confirmation, selecting and requesting two apps, pending status, simulated approval, and password recovery. The development test simulated Supabase and made no live account changes.
 
-**WebKit/Safari:** Separate iOS-like WebKit verification was attempted. The first run was blocked by Ubuntu 26.04 support and the revised Ubuntu 24.04 installer has been slow. Do not claim real Safari compatibility until that test or an iPad Safari check passes.
+Results: [Application and endpoint](https://github.com/DavidFliesen/ARTEZIQ/actions/runs/44429225387), [WebKit](https://github.com/DavidFliesen/ARTEZIQ/actions/runs/44427922304/job/135237476507), and [Feedback Portal](https://github.com/DavidFliesen/feedback/actions/runs/44438951521).
 
 ## Obtain the development form without publishing it
 
@@ -46,6 +47,6 @@ Use a sender-controlled test email and a real authorized applicant name:
 6. Approve deliberately through the Founder dashboard; verify approved app launch and an in-app Ladybug feedback report. If Cloudflare Access protects the beta PWA, check its separately managed email allowlist; Supabase approval alone cannot bypass Cloudflare.
 7. Verify existing tester accounts, feedback, invitation history, and application links are unchanged.
 
-## Rollout boundary
+## Production rollout
 
-The **production** ARTEZIQ landing page and Feedback Dashboard remain unchanged until the complete NDA is reviewed, the real Safari browser test passes, and the Founder explicitly authorizes deployment. An isolated file preview is not a production release.
+Keep this work on the development branches during the production hold. Live confirmation remains outstanding for NDA email delivery, Supabase account verification, Founder approval, and protected app access.
