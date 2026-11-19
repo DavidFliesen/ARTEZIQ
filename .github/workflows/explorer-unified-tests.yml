@@ -43,3 +43,17 @@ jobs:
         run: test -x /usr/bin/google-chrome
       - name: Test cross-origin invalid POST from a real browser (cannot send email)
         run: node scripts/check-unified-browser-post.mjs
+
+  webkit-form-mock:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright and PDF runtime
+        run: npm install --no-save --ignore-scripts --no-package-lock playwright@1.56.1 jspdf@2.5.1
+      - name: Install Safari-like WebKit browser
+        run: npx playwright install --with-deps webkit
+      - name: Test mobile unified NDA form with all email requests intercepted
+        run: node scripts/test-unified-form-webkit.mjs
