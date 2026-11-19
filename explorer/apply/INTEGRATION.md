@@ -75,7 +75,7 @@ Automated code test: `tests/explorer-unified-server.test.cjs`, included in `.git
 2. **Done:** the Founder deployed the standalone `explorer/unified-apps-script.gs` Web App; GitHub Actions confirmed HTTP 200 and the expected service/version on GET using the intended ARTEZIQ account. Capture the new version's `/exec` URL.
 3. **Done in development:** `ENDPOINT` in `explorer/apply/index.html` uses the new `/exec` URL. No production website deployment was performed.
 4. Run an actual disposable-account application and check: emailed PDF has all 13 NDA sections, checked apps, dates and signature; both intended recipients receive it exactly once; invalid/incomplete submissions do not send.
-5. Follow the confirmation link into `https://davidfliesen.github.io/feedback/explorer.html?apps=...`; create/sign in to a **disposable Explorer** account and request selected apps in one click. Confirm each appears as Pending for Founder review, no automatic approval.
+5. Follow the confirmation link into `https://explorer.arteziq.com/?apps=...`; create/sign in to a **disposable Explorer** account and request selected apps in one click. Confirm each appears as Pending for Founder review, no automatic approval.
 6. Confirm Founder review/approval, app launch, Ladybug submission, and that existing beta users and feedback remain intact. For protected apps, grant Cloudflare Access separately before claiming a one-step login experience.
 7. Only after all tests pass, merge/deploy the two repositories and verify both domains, caching, and mobile behavior. GitHub commit success alone is **not production deployment**.
 

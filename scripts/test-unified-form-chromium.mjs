@@ -151,7 +151,7 @@ try{
   assert.match(await page.locator('#status').innerText(),/signed application was submitted/);
   const next=await page.locator('#status a').getAttribute('href');
   const p=new URL(next);
-  assert.equal(p.hostname,'davidfliesen.github.io');
+  assert.equal(p.origin+p.pathname,'https://explorer.arteziq.com/');
   assert.deepEqual(p.searchParams.get('apps').split(','),['anglers-navigator','hand-over-foot']);
   assert.deepEqual(browserErrors,[],'No uncaught browser errors');
   const noScript=await browser.newPage({javaScriptEnabled:false});
