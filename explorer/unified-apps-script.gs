@@ -1,5 +1,5 @@
 /*
- * ARTEZIQ Explorer — unified multi-app application handler (v1, 2026-11-18)
+ * ARTEZIQ Explorer — unified multi-app application handler (v2, 2026-11-18)
  *
  * NEW STANDALONE APPS SCRIPT PROJECT ONLY.
  * Do not replace explorer/google-apps-script.gs or the existing deployed web app.
@@ -40,7 +40,7 @@ const UNIFIED_FIELD_LIMITS = Object.freeze({
 
 /* Public, non-identifying health check. Does not send email. */
 function doGet() {
-  return unifiedJson_({ok: true, service: 'arteziq-explorer-unified', version: '1'});
+  return unifiedJson_({ok: true, service: 'arteziq-explorer-unified', version: '2', minimumTesterAge: 13});
 }
 
 function doPost(e) {
@@ -211,13 +211,18 @@ function unifiedValidate_(data) {
     }
     clean[field] = text;
   });
-  if (data.agreed !== true || data.ageConfirmed !== true) {
-    unifiedFail_('The NDA and age confirmation are required.');
-  }
+  if (data.agreed !== true) unifiedFail_('NDA acceptance is required.');
   if (data.company) unifiedFail_('Application rejected.');
-  if (clean.submissionToken !== UNIFIED_PUBLIC_TOKEN || clean.formVersion !== 'unified-2') {
+  if (clean.submissionToken !== UNIFIED_PUBLIC_TOKEN ||
+      !['unified-2', 'unified-3'].includes(clean.formVersion)) {
     unifiedFail_('The application form version is not supported.');
   }
+  // The earlier form asked for 18+. Keep its payload compatible without reusing
+  // its confirmation field for the new 13+ policy.
+  const eligible = clean.formVersion === 'unified-3'
+    ? data.minimumAgeConfirmed === true
+    : data.ageConfirmed === true;
+  if (!eligible) unifiedFail_('Age eligibility confirmation is required.');
   if (!Array.isArray(data.appsBeingTested) ||
       data.appsBeingTested.length < 1 ||
       data.appsBeingTested.length > UNIFIED_ALLOWED_APPS.length) {

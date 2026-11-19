@@ -36,10 +36,14 @@ Option B — private GitHub Codespaces workspace (only if the account has Codesp
 
 ## One genuine end-to-end NDA test (requires the tester's own action)
 
+The 13+ application requires version 2 of the separate unified Apps Script deployment. Run
+`node scripts/check-unified-endpoint.mjs --require-teen-support` from the repository before
+testing a signed application with the updated form.
+
 The QA automations **cannot legitimately sign a legal NDA on a person's behalf**. A real tester must review the NDA and draw their own signature.
 
 Use a sender-controlled test email and a real authorized applicant name:
-1. Choose **Angler's Navigator** and **Hand Over Foot**. Fill in the required fields, read the entire 13-section NDA, accept its terms, confirm age 18+, and draw your own signature.
+1. Choose **Angler's Navigator** and **Hand Over Foot**. Fill in the required fields, read the entire 13-section NDA, select your age range, accept the NDA, and draw your own signature.
 2. Submit **once**. If the form says delivery is uncertain, inspect the mailbox first; **do not click Submit repeatedly**. The backend protects against duplicates and can withhold automatic resends.
 3. Verify one signed NDA email reached the applicant mailbox and a second reached `arteziq.apps@gmail.com`. Both must name **both selected apps** and attach one full, readable multi-page NDA PDF with the app list, date, agreement ID, and drawn signature.
 4. Click **Continue to Explorer account setup**. Confirm the Feedback Portal has both app selections and only offers **Request access to selected apps** for eligible, not-yet-requested apps.

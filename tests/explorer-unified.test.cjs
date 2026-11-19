@@ -11,7 +11,7 @@ test('new NDA includes all original numbered sections plus acceptance',()=>{
   assert.match(application,/<h3>Acceptance<\/h3>/);
   assert.match(application,/id="ndaSelectedApps"/);
   assert.match(application,/id="signatureCanvas"/);
-  assert.match(application,/id="ageConfirmed"/);
+  assert.match(application,/id="eligibilityAge"/);
   assert.match(application,/id="agreed"/);
 });
 
@@ -28,7 +28,7 @@ test('application script has valid JavaScript syntax and uses the new unified en
 
 test('payload and attached PDF cover every selected app and complete NDA',()=>{
   for(const field of [
-    'appsBeingTested','appBeingTested','ndaName','ndaEmail','ndaDate','ageConfirmed',
+    'appsBeingTested','appBeingTested','ndaName','ndaEmail','ndaDate','minimumAgeConfirmed',
     'formStartedAt','privacyNoticeVersion','submissionToken',
     'pdfBase64','agreementId','signedAt'
   ])assert.ok(application.includes(field),'Required contract field missing: '+field);

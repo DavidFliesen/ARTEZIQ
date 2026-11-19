@@ -25,8 +25,14 @@ catch {
   console.error('UNIFIED_ENDPOINT_NOT_JSON: final host:', new URL(response.url).hostname, 'response:', body.slice(0, 180).replace(/\s+/g,' '));
   process.exit(1);
 }
-if (data.ok !== true || data.service !== 'arteziq-explorer-unified' || String(data.version) !== '1') {
+const version = String(data.version);
+if (data.ok !== true || data.service !== 'arteziq-explorer-unified' || !['1','2'].includes(version)) {
   console.error('UNIFIED_ENDPOINT_UNEXPECTED_SERVICE:', JSON.stringify({ ok: data.ok, service: data.service, version: data.version }));
+  process.exit(1);
+}
+if (process.argv.includes('--require-teen-support') &&
+    (version !== '2' || data.minimumTesterAge !== 13)) {
+  console.error('The deployed unified Apps Script must be updated to version 2 for ages 13–17.');
   process.exit(1);
 }
 const cors = response.headers.get('access-control-allow-origin');

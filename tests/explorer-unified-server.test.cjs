@@ -101,6 +101,14 @@ test('complete 2-app submission sends exactly one signed attachment to founder a
   assert.equal(t.releaseCount,1);
 });
 
+test('new 13+ application accepts the minimum-age confirmation without retaining an age range',()=>{
+  const t=setup();
+  const p=validPayload({formVersion:'unified-3',ageConfirmed:undefined,minimumAgeConfirmed:true});
+  assert.equal(t.post(p).ok,true);
+  assert.equal(t.sent.length,2);
+  assert.doesNotMatch(t.sent[0].body,/age range|birth date/i);
+});
+
 test('repeat application gives duplicate success without sending additional emails',()=>{
   const t=setup(), p=validPayload();
   assert.equal(t.post(p).ok,true);
@@ -139,6 +147,9 @@ for(const [label,change] of [
   ['wrong primary app',{appBeingTested:APP_JIGSAW}],
   ['no age confirmation',{ageConfirmed:false}],
   ['no NDA consent',{agreed:false}],
+  ['new form with only the legacy age confirmation',{formVersion:'unified-3'}],
+  ['new form with rejected age eligibility',{formVersion:'unified-3',minimumAgeConfirmed:false}],
+  ['new form with a string for age eligibility',{formVersion:'unified-3',minimumAgeConfirmed:'true'}],
   ['string instead of age boolean',{ageConfirmed:'true'}],
   ['mismatched signer',{ndaName:'Other Name'}],
   ['mismatched NDA email',{ndaEmail:'other@example.com'}],
@@ -225,6 +236,6 @@ test('recent applications from same email but different app sets are throttled',
 test('GET health response is not a submission and never sends mail',()=>{
   const t=setup();
   const response=JSON.parse(t.sandbox.doGet().body);
-  assert.deepEqual(response,{ok:true,service:'arteziq-explorer-unified',version:'1'});
+  assert.deepEqual(response,{ok:true,service:'arteziq-explorer-unified',version:'2',minimumTesterAge:13});
   assert.equal(t.sent.length,0);
 });

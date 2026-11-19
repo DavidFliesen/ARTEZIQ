@@ -35,8 +35,11 @@ try{
       pdfLoads++;
       return failPdfLoad?route.abort():route.fulfill({status:200,contentType:'application/javascript',body:jspdf});
     });
-  await page.route('https://arteziq.com/analytics.js',route=>
-    route.fulfill({status:200,contentType:'application/javascript',body:'window.arteziqAnalytics={track:function(){}};'}));
+  let analyticsRequests=0;
+  await page.route('https://arteziq.com/analytics.js',route=>{
+    analyticsRequests++;
+    return route.fulfill({status:200,contentType:'application/javascript',body:'window.arteziqAnalytics={track:function(){}};'});
+  });
 
   // Block any network activity except local HTML, already stubbed scripts, and
   // the exact endpoint interception. The latter is mocked; never sends email.
@@ -53,6 +56,16 @@ try{
     });
   });
   await page.goto(localUrl,{waitUntil:'load'});
+  assert.equal(await page.locator('#fullName').isVisible(),false);
+  await page.locator('#eligibilityAge').selectOption('under-13');
+  assert.equal(await page.locator('#fullName').isVisible(),false);
+  assert.match(await page.locator('#eligibilityStatus').innerText(),/ages 13 and older/);
+  await page.locator('#application').evaluate(form=>form.dispatchEvent(new Event('submit',{cancelable:true})));
+  assert.equal(postCount,0);
+  assert.equal(analyticsRequests,0,'No analytics loads during age screening');
+  await page.locator('#eligibilityAge').selectOption('18-plus');
+  assert.equal(await page.locator('#fullName').isVisible(),true);
+  await page.locator('#eligibilityAge').selectOption('13-17');
   assert.equal(await page.locator('#submit').isEnabled(),true);
   assert.equal(await page.locator('#ndaDate').getAttribute('datetime'),'2026-11-18');
   assert.equal(await page.locator('#ndaDate').innerText(),'November 18, 2026');
@@ -77,12 +90,11 @@ try{
   await page.locator('#submit').click();
   const incompleteStatus=await page.locator('#status').innerText();
   for(const message of [
-    /Enter a valid email address/, /Draw your signature/, /accept the NDA/, /at least 18/
+    /Enter a valid email address/, /Draw your signature/, /accept the NDA/
   ])assert.match(incompleteStatus,message);
   assert.equal(page.url(),localUrl);
   assert.equal(postCount,0);
   await page.locator('#email').fill('do-not-send@example.invalid');
-  await page.locator('#ageConfirmed').check();
   await page.locator('#agreed').check();
 
   const formValues=()=>page.locator('#application').evaluate(form=>[...new FormData(form)]);
@@ -93,7 +105,7 @@ try{
   assert.equal(page.url(),localUrl,'Invalid submission must stay on the form');
   assert.deepEqual(await formValues(),entered,'Invalid submission must preserve the entered fields');
   assert.equal(await page.locator('#agreed').isChecked(),true);
-  assert.equal(await page.locator('#ageConfirmed').isChecked(),true);
+  assert.equal(await page.locator('#eligibilityAge').inputValue(),'13-17');
   assert.match(await page.locator('#status').innerText(),/Your entries are still here/);
   assert.equal(await page.locator('#status li').count(),1);
   await page.getByRole('link',{name:'Draw your signature in the NDA signature box.'}).click();
@@ -126,8 +138,9 @@ try{
   assert.equal(captured.ndaDate,'2026-11-18');
   assert.equal(captured.signedAt,'2026-11-19T01:15:00.000Z');
   assert.equal(captured.agreed,true);
-  assert.equal(captured.ageConfirmed,true);
-  assert.equal(captured.formVersion,'unified-2');
+  assert.equal(captured.minimumAgeConfirmed,true);
+  for(const field of ['ageConfirmed','eligibilityAge','ageRange','birthDate'])assert.equal(Object.hasOwn(captured,field),false);
+  assert.equal(captured.formVersion,'unified-3');
   assert.match(captured.filename,/^ARTEZIQ-Explorer-NDA-AZ-/);
   assert.ok(captured.pdfBase64.length>4000,'Generated PDF should have substantial content');
   const pdf=Buffer.from(captured.pdfBase64,'base64');
@@ -147,10 +160,10 @@ try{
   await noScript.goto(localUrl);
   assert.equal(await noScript.locator('#submit').isDisabled(),true,'The static form cannot submit before JavaScript initializes');
   assert.match(await noScript.locator('#status').innerText(),/needs JavaScript/);
-  await noScript.locator('#fullName').fill('Safe Draft');
-  await noScript.locator('#fullName').press('Enter');
+  await noScript.locator('#eligibilityAge').selectOption('13-17');
+  await noScript.locator('#eligibilityAge').press('Enter');
   assert.equal(noScript.url(),localUrl);
-  assert.equal(await noScript.locator('#fullName').inputValue(),'Safe Draft');
+  assert.equal(await noScript.locator('#fullName').isVisible(),false);
   console.log('CHROMIUM_UNIFIED_FORM_MOCK_OK:',JSON.stringify({
     width:390,appCount:2,hasSignature:true,pdfBytes:pdf.length,
     postCount,portalHandoff:p.searchParams.get('apps'),

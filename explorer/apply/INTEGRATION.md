@@ -19,6 +19,15 @@ This handoff does not create a Supabase account, approve an app, or add anyone t
 - Chrome read a cross-origin JSON validation error from the live endpoint after sending an intentionally invalid POST containing no applicant data. The signed form and its portal link passed with the backend response simulated in both Chrome and Playwright WebKit. See [Chrome and endpoint results](https://github.com/DavidFliesen/ARTEZIQ/actions/runs/44429225387) and [WebKit results](https://github.com/DavidFliesen/ARTEZIQ/actions/runs/44427922304/job/135237476507).
 - The [development Feedback Portal run](https://github.com/DavidFliesen/feedback/actions/runs/44438951521) passed its sign-in, account confirmation, enrollment, simulated approval, and password recovery checks. Actual email delivery, account verification, Founder approval, and access to the protected app remain unverified. The production hold is still in effect.
 
+## Deploy the 13+ application update
+
+In the existing **standalone unified** Apps Script project, update `Code.gs` from
+[`explorer/unified-apps-script.gs`](../unified-apps-script.gs). Use **Deploy → Manage deployments**
+to edit the existing web app deployment and select **New version**, keeping its current `/exec` URL.
+The original app-specific project uses a different endpoint. The read-only check
+`node scripts/check-unified-endpoint.mjs --require-teen-support` confirms version `2`
+and minimum tester age `13` before the new form goes live.
+
 ## Google Apps Script contract
 
 The new unified web app deployment must accept `POST` text/plain JSON and reply with JSON such as `{"ok":true}` on success. The posted fields are:
@@ -26,9 +35,9 @@ The new unified web app deployment must accept `POST` text/plain JSON and reply 
 - `appsBeingTested`: nonempty array of unique app names, selected from the four allowed beta apps; **validate all names on the server**.
 - `appBeingTested`: the first selected name, provided for backwards compatibility only. **Do not treat it as the full application**.
 - `fullName`, `email`, `phone`, `cityState`, `contactMethod`, `device`, `experience`: same applicant fields as the legacy form.
-- `ndaName`, `ndaEmail`, `ndaDate`, `agreed`, `ageConfirmed`: NDA attestations; validate signer name and email match applicant, 18+ confirmation, and date.
+- `ndaName`, `ndaEmail`, `ndaDate`, `agreed`, `minimumAgeConfirmed`: NDA attestations, including eligibility at age 13 or older. The new form does not transmit the age range. The server also accepts previous `unified-2` payloads with their original `ageConfirmed` field.
 - `pdfBase64` and `filename`: PDF attachment containing the **full NDA terms and handwritten signature**, not just an acknowledgment page.
-- `agreementId`, `signedAt`, `formStartedAt`, `formVersion='unified-2'`, `privacyNoticeVersion`, `userAgent`, `company` honeypot, and `submissionToken`: administrative/anti-abuse fields.
+- `agreementId`, `signedAt`, `formStartedAt`, `formVersion='unified-3'`, `privacyNoticeVersion`, `userAgent`, `company` honeypot, and `submissionToken`: administrative/anti-abuse fields.
 
 Preserve server-side field limits, timing checks, PDF size limits, rate limits, and privacy protections from the existing Apps Script. Ensure both the applicant email and ARTEZIQ admin email identify **all selected apps** and include the signed PDF. The old single-app endpoint does **not** satisfy this contract even if it returns `ok: true`. The legacy script in this repository requires a multi-app update before it can be used with the unified page.
 
@@ -38,7 +47,7 @@ The existing Apps Script may already have been edited outside GitHub. **Check it
 
 `explorer/unified-apps-script.gs` is a **new, standalone server implementation**. It does not overwrite the existing `explorer/google-apps-script.gs`, and the production single-app `/exec` deployment remains untouched. This new handler:
 
-- Verifies the four-app allowlist, unique selection, first-app compatibility field, applicant fields, signer/email matching, legal consents, 18+ confirmation, form version/timing, honeypot, and PDF header/trailer/size.
+- Verifies the four-app allowlist, unique selection, first-app compatibility field, applicant fields, signer/email matching, NDA acceptance, age eligibility, form version/timing, honeypot, and PDF header/trailer/size.
 - Sends **exactly one** NDA attachment to the ARTEZIQ admin mailbox and **one** copy to the applicant, with **all selected app names in both emails**.
 - Provides a harmless `doGet()` health check that responds with `{"ok":true,"service":"arteziq-explorer-unified","version":"1"}` and sends no email.
 - Uses a script lock, a seven-day deduplication record, a fifteen-minute per-email throttle, Google MailApp's remaining quota, and additional 36-recipient/hour and 70-recipient/day caps for the unified endpoint. These caps are for **this separate endpoint**, not the existing invitation gateway.

@@ -1,7 +1,6 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <script defer src="https://arteziq.com/analytics.js"></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="description" content="Apply once for multiple ARTEZIQ Explorer beta applications and sign one complete NDA.">
@@ -36,6 +35,16 @@
   <h1>Apply to become an Explorer</h1>
   <p>Choose one or more apps. Complete one application and sign one full Non-Disclosure Agreement covering every app you select. Enrollment remains subject to ARTEZIQ approval.</p>
   <form id="application" method="post" novalidate>
+    <label>What is your age range?
+      <select id="eligibilityAge">
+        <option value="">Choose your age range</option>
+        <option value="under-13">12 or younger</option>
+        <option value="13-17">13–17</option>
+        <option value="18-plus">18 or older</option>
+      </select>
+    </label>
+    <p id="eligibilityStatus" class="hint" role="status"></p>
+    <div id="applicationDetails" hidden>
     <fieldset>
       <legend>1. Choose the apps to test</legend>
       <label class="check"><input type="checkbox" name="apps" id="firstApp" value="Angler's Navigator"> Angler's Navigator</label>
@@ -114,11 +123,11 @@
       <canvas id="signatureCanvas" width="1000" height="210" tabindex="-1" aria-label="Handwritten signature pad" aria-describedby="signatureInstruction"></canvas>
       <button type="button" class="secondary" id="clearSignature">Clear signature</button>
       <label class="check"><input type="checkbox" id="agreed" required> I have read the complete NDA and agree to its terms.</label>
-      <label class="check"><input type="checkbox" id="ageConfirmed" required> I confirm that I am at least 18 years old.</label>
     </fieldset>
     <p class="privacy"><strong>Privacy notice:</strong> ARTEZIQ uses your details to review your Explorer application, administer the signed NDA and contact you. Application details and the signed PDF are emailed to ARTEZIQ, with a PDF copy sent to you. They are not intentionally saved to a separate database or Google Drive folder by the current email-based backend. Explorer application/NDA records are normally kept for the Explorer relationship plus three years unless law requires longer. For access, correction or deletion requests, contact <a href="mailto:arteziq.apps@gmail.com">arteziq.apps@gmail.com</a>. Read the <a href="/privacy/" target="_blank" rel="noopener">Privacy Policy</a>.</p>
     <label style="display:none">Leave blank<input name="company" tabindex="-1" autocomplete="off"></label>
     <button type="submit" id="submit" disabled>Submit signed application</button>
+    </div>
     <div id="status" class="status" role="status" aria-live="polite" tabindex="-1">This form needs JavaScript. If Submit stays unavailable, open the form in a browser with JavaScript enabled.</div>
   </form>
 </main>
@@ -140,7 +149,15 @@
   let drawing=false, signed=false;
   const fullName=document.getElementById('fullName');
   const agreement=document.getElementById('agreed');
-  const age=document.getElementById('ageConfirmed');
+  const age=document.getElementById('eligibilityAge');
+  const applicationDetails=document.getElementById('applicationDetails');
+  const eligibilityStatus=document.getElementById('eligibilityStatus');
+  const eligibleAge=()=>age.value==='13-17'||age.value==='18-plus';
+  function updateEligibility(){
+    applicationDetails.hidden=!eligibleAge();
+    eligibilityStatus.textContent=age.value==='under-13'?'Online Explorer applications are available to ages 13 and older.':'';
+  }
+  age.addEventListener('change',updateEligibility);
   const ndaDate=document.getElementById('ndaDate');
   const dateFormatter=new Intl.DateTimeFormat('en-US',{year:'numeric',month:'long',day:'numeric'});
   const requiredFields=[
@@ -181,7 +198,10 @@
   }
   fullName.addEventListener('input',updateNdaName);
   fullName.addEventListener('change',updateNdaName);
-  window.addEventListener('pageshow',updateNdaDetails);
+  window.addEventListener('pageshow',()=>{
+    updateNdaDetails();
+    updateEligibility();
+  });
   updateNdaDetails();
   function point(e){
     const box=canvas.getBoundingClientRect();
@@ -253,7 +273,6 @@
     }
     if(!signed)issues.push(['signatureCanvas','Draw your signature in the NDA signature box.']);
     if(!agreement.checked)issues.push(['agreed','Check the box to accept the NDA.']);
-    if(!age.checked)issues.push(['ageConfirmed','Check the box to confirm that you are at least 18.']);
     if(!issues.length)return true;
 
     show('Your entries are still here. Complete the following before submitting.',true);
@@ -278,7 +297,7 @@
   }
   form.addEventListener('submit',async e=>{
     e.preventDefault();
-    if(submit.disabled)return;
+    if(submit.disabled||!eligibleAge())return;
     const apps=selectedApps();
     const fullNameText=updateNdaName();
     const acceptedAt=new Date();
@@ -302,8 +321,8 @@
         cityState:fields.get('cityState'),contactMethod:fields.get('contactMethod'),
         device:fields.get('device'),experience:fields.get('experience'),
         ndaName:fullNameText,ndaEmail:email,ndaDate:signedDate,
-        agreed:true,ageConfirmed:true,agreementId,signedAt,
-        formStartedAt:started,formVersion:'unified-2',privacyNoticeVersion:'2026-10-18-v1',
+        agreed:true,minimumAgeConfirmed:true,agreementId,signedAt,
+        formStartedAt:started,formVersion:'unified-3',privacyNoticeVersion:'2026-11-18-v2',
         userAgent:navigator.userAgent.slice(0,400),submissionToken:SUBMISSION_TOKEN,
         company:'',filename:'ARTEZIQ-Explorer-NDA-'+agreementId+'.pdf'
       };
@@ -327,11 +346,16 @@
       status.focus();
       return;
     }
-    try{
+    // Load analytics only after an eligible applicant completes the form.
+    const analytics=document.createElement('script');
+    analytics.src='https://arteziq.com/analytics.js';
+    analytics.addEventListener('load',()=>{
       if(window.arteziqAnalytics){apps.forEach(name=>window.arteziqAnalytics.track('explorer_application_submitted',{app_name:name}))}
-    }catch{/* Analytics cannot affect the application's confirmation. */}
+    });
+    document.head.appendChild(analytics);
   });
   status.textContent='';
+  updateEligibility();
   submit.disabled=false;
 })();
 </script>
