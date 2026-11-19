@@ -47,6 +47,7 @@ jobs:
   webkit-form-mock:
     if: github.event_name == 'workflow_dispatch' # slower Safari-engine verification, manual only
     runs-on: ubuntu-24.04
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
