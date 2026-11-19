@@ -29,3 +29,17 @@ jobs:
           node-version: '22'
       - name: Check deployed unified Apps Script health (GET only)
         run: node scripts/check-unified-endpoint.mjs
+
+  browser-invalid-post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser control library
+        run: npm install --no-save --ignore-scripts --no-package-lock playwright-core@1.56.1
+      - name: Check Chrome installation
+        run: test -x /usr/bin/google-chrome
+      - name: Test cross-origin invalid POST from a real browser (cannot send email)
+        run: node scripts/check-unified-browser-post.mjs
