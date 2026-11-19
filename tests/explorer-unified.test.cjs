@@ -28,7 +28,7 @@ test('application script has valid JavaScript syntax and uses the new unified en
 
 test('payload and attached PDF cover every selected app and complete NDA',()=>{
   for(const field of [
-    'appsBeingTested','appBeingTested','ndaEmail','ageConfirmed',
+    'appsBeingTested','appBeingTested','ndaName','ndaEmail','ndaDate','ageConfirmed',
     'formStartedAt','privacyNoticeVersion','submissionToken',
     'pdfBase64','agreementId','signedAt'
   ])assert.ok(application.includes(field),'Required contract field missing: '+field);
