@@ -19,3 +19,13 @@ jobs:
           node-version: '22'
       - name: Verify unified application HTML and JavaScript contract
         run: node --test tests/explorer-unified.test.cjs tests/explorer-unified-server.test.cjs
+
+  deployed-endpoint-health:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check deployed unified Apps Script health (GET only)
+        run: node scripts/check-unified-endpoint.mjs
