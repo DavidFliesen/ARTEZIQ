@@ -138,7 +138,7 @@ function doPost(e) {
         'Your signed NDA PDF is attached. Save it for your records.',
         'Next, use the Explorer Portal to create or sign in to your Explorer account',
         'and request access to each selected app. Every app requires ARTEZIQ approval.',
-        'Explorer Portal: https://davidfliesen.github.io/feedback/explorer.html',
+        'Explorer Portal: https://explorer.arteziq.com/',
         '',
         'Submitting this application does not guarantee enrollment or launch access.',
         'ARTEZIQ'
