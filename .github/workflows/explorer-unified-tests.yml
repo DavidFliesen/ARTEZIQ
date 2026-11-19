@@ -45,6 +45,7 @@ jobs:
         run: node scripts/check-unified-browser-post.mjs
 
   webkit-form-mock:
+    if: github.event_name == 'workflow_dispatch' # slower Safari-engine verification, manual only
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -57,3 +58,15 @@ jobs:
         run: npx playwright install --with-deps webkit
       - name: Test mobile unified NDA form with all email requests intercepted
         run: node scripts/test-unified-form-webkit.mjs
+
+  chromium-form-mock:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser controller and PDF runtime
+        run: npm install --no-save --ignore-scripts --no-package-lock playwright-core@1.56.1 jspdf@2.5.1
+      - name: Test complete mobile NDA form with mocked delivery
+        run: node scripts/test-unified-form-chromium.mjs
